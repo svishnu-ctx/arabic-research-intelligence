@@ -1,0 +1,59 @@
+name: CI & Continuous Deployment
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js 24 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Static Code Analysis & Types
+        run: npx tsc --noEmit
+
+      - name: Production Webpack Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_GIT_COMMIT_SHA: ${{ github.sha }}
+
+      - name: Execute Automated Test Suite
+        run: npm test
+
+      - name: Trigger Render Deploy Hook
+        if: success()
+        run: |
+          echo "Triggering Render deployment for commit: ${{ github.sha }}"
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}&ref=${{ github.sha }}"
+
+      - name: Verify Live Deployment Health & Commit SHA
+        if: success()
+        run: |
+          echo "Awaiting deployment propagation on Render..."
+          sleep 45
+          for i in {1..20}; do
+            RESPONSE=$(curl -s "https://${{ secrets.RENDER_APP_HOSTNAME }}/api/health" || echo "{}")
+            LIVE_SHA=$(echo $RESPONSE | jq -r '.commitSha // empty')
+            STATUS=$(echo $RESPONSE | jq -r '.status // empty')
+            echo "Attempt $i: Status=$STATUS, Live SHA=$LIVE_SHA"
+            if [ "$LIVE_SHA" = "${{ github.sha }}" ] && [ "$STATUS" = "healthy" ]; then
+              echo "Deployment verified successfully with matching commit SHA."
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Deployment verification timed out or SHA mismatched."
+          exit 1
