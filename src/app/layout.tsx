@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { I18nProvider } from '@/lib/i18n/context';
 import { AuthProvider } from '@/lib/auth/context';
+import { ThemeProvider } from '@/lib/theme/context';
 import { AppShell } from '@/components/layout/AppShell';
 import './globals.css';
 
@@ -16,12 +17,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased font-sans">
-        <I18nProvider>
-          <AuthProvider>
-            <AppShell>{children}</AppShell>
-          </AuthProvider>
-        </I18nProvider>
+      <body className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 antialiased font-sans">
+        <ThemeProvider>
+          <I18nProvider>
+            <AuthProvider>
+              <AppShell>{children}</AppShell>
+            </AuthProvider>
+          </I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
