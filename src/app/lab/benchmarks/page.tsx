@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { useLab } from '@/lib/lab/context';
 import {
@@ -25,6 +25,10 @@ export default function BenchmarkLibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedBenchmarkForDrawer, setSelectedBenchmarkForDrawer] = useState<BenchmarkTestCase | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/lab/benchmarks').catch(() => {});
+  }, []);
 
   // New Benchmark Form
   const [newTitle, setNewTitle] = useState('');

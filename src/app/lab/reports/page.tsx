@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { useLab } from '@/lib/lab/context';
 import {
@@ -19,6 +19,18 @@ export default function EvaluationReportsPage() {
   const { t, language } = useI18n();
   const { models } = useLab();
   const [downloadNotice, setDownloadNotice] = useState(false);
+  const [serverMetrics, setServerMetrics] = useState<{ totalModels: number; averageScore: number } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/lab/reports')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.success && data.metrics) {
+          setServerMetrics(data.metrics);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handlePrint = () => {
     window.print();

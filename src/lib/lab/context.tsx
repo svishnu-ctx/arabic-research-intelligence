@@ -43,6 +43,37 @@ export function LabProvider({ children }: { children: React.ReactNode }) {
   ]);
 
   useEffect(() => {
+    // 1. Fetch live models from backend server API
+    fetch('/api/lab/models')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.models) && data.models.length > 0) {
+          setModels(data.models);
+        }
+      })
+      .catch(() => {});
+
+    // 2. Fetch live benchmarks from backend server API
+    fetch('/api/lab/benchmarks')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.benchmarks) && data.benchmarks.length > 0) {
+          setBenchmarks(data.benchmarks);
+        }
+      })
+      .catch(() => {});
+
+    // 3. Fetch live reviews from backend server API
+    fetch('/api/lab/reviews')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.reviews) && data.reviews.length > 0) {
+          setReviews(data.reviews);
+        }
+      })
+      .catch(() => {});
+
+    // Local storage restore fallback
     const saved = localStorage.getItem('ari_lab_models');
     if (saved) {
       try {

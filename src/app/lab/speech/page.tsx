@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import {
   Mic,
@@ -26,6 +26,10 @@ export default function SpeechEvaluationPage() {
   const [backendStatus, setBackendStatus] = useState<string | null>(null);
 
   const scenario = DEMO_SPEECH_SCENARIO;
+
+  useEffect(() => {
+    runSpeechEvaluation();
+  }, []);
 
   const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

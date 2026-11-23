@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n/context';
 import { useLab } from '@/lib/lab/context';
 import {
@@ -24,6 +24,10 @@ export default function ModelRegistryPage() {
   const [activeTab, setActiveTab] = useState<'all' | 'llm' | 'speech' | 'arabic-first' | 'bilingual'>('all');
   const [selectedModelForModal, setSelectedModelForModal] = useState<AIModel | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/lab/models').catch(() => {});
+  }, []);
 
   // New Model Form State
   const [newName, setNewName] = useState('');
