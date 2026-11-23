@@ -100,6 +100,16 @@ Generate a concise thematic synthesis and evidence-based research gaps as valid 
             supportingPapers: params.publications.map(p => p.title),
           }
         ];
+      } else if (rawThemes.length === 0 && parsed.synthesis?.main_findings) {
+        rawThemes = [
+          {
+            theme: typeof parsed.theme === 'string' ? parsed.theme : (isArabic ? 'المحور الأكاديمي الرئيسي' : 'Core Research Synthesis Theme'),
+            description: Array.isArray(parsed.synthesis.main_findings)
+              ? parsed.synthesis.main_findings.join('\n\n• ')
+              : String(parsed.synthesis.main_findings),
+            supportingPapers: params.publications.map(p => p.title),
+          }
+        ];
       }
 
       const rawGaps = Array.isArray(parsed.verifiedGaps)
@@ -108,6 +118,8 @@ Generate a concise thematic synthesis and evidence-based research gaps as valid 
         ? parsed.research_gaps
         : Array.isArray(parsed.researchGaps)
         ? parsed.researchGaps
+        : Array.isArray(parsed.synthesis?.research_gaps)
+        ? parsed.synthesis.research_gaps
         : [];
 
       const normalizedThemes = rawThemes.map((t: any, i: number) => ({
