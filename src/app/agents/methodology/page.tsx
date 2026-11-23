@@ -110,6 +110,7 @@ export default function MethodologyAgentPage() {
         body: JSON.stringify({
           filename: 'sharjah_solar_microgrid_sample.csv',
           content: csvText,
+          csvContent: csvText,
           researchTopic: topic,
           language: isArabic ? 'ar' : 'en',
         }),
@@ -119,9 +120,13 @@ export default function MethodologyAgentPage() {
         const data = await res.json();
         setDatasetStats(data.stats);
         setFanarExplanation(data.fanarExplanation);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        alert(errData.error || (isArabic ? 'حدث خطأ أثناء تحليل البيانات' : 'Dataset analysis failed.'));
       }
     } catch (err) {
       console.error(err);
+      alert(isArabic ? 'تعذر الاتصال بالخادم لتحليل البيانات' : 'Failed to connect to dataset analysis service.');
     } finally {
       setIsAnalyzingDataset(false);
     }
@@ -236,7 +241,7 @@ export default function MethodologyAgentPage() {
                   {isArabic ? 'التصميم المنهجي المقترح' : 'Suggested Research Design'}
                 </span>
                 <h3 className="mt-1 text-base font-bold text-slate-900 dark:text-white">
-                  {methodologyAdvice.researchDesign}
+                  {methodologyAdvice.researchDesign || (methodologyAdvice as any).suggestedDesign}
                 </h3>
                 <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {methodologyAdvice.justification}
@@ -248,7 +253,7 @@ export default function MethodologyAgentPage() {
                   {isArabic ? 'خطة جمع البيانات وأسلوب العينات' : 'Data Collection & Sampling Strategy'}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {methodologyAdvice.samplingStrategy}
+                  {methodologyAdvice.samplingStrategy || (methodologyAdvice as any).dataCollectionApproach || (methodologyAdvice as any).dataCollection}
                 </p>
               </div>
 

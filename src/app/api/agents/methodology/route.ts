@@ -27,12 +27,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const language = body.language || 'en';
+
     const methodology = await generateMethodologyPlan({
       topic,
       researchType,
       level,
       questions,
       objectives,
+      language: language === 'ar' ? 'ar' : 'en',
     });
 
     if (projectId) {
