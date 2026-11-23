@@ -276,7 +276,7 @@ export default function ThesisAgentPage() {
                     <span>{isArabic ? 'توصيات التعديل الإجرائية' : 'Actionable Revision Recommendations'}</span>
                   </h4>
                   <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                    {reviewResult.actionableRevisions.map((rev, i) => (
+                    {(Array.isArray(reviewResult.actionableRevisions) ? reviewResult.actionableRevisions : []).map((rev, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-emerald-600 font-bold">•</span>
                         <span>{rev}</span>

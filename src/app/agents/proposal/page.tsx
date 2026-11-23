@@ -84,9 +84,13 @@ export default function ProposalAgentPage() {
       if (res.ok) {
         const data = await res.json();
         setProposal(data.proposal);
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        alert(errorData.error || (isArabic ? 'حدث خطأ أثناء معالجة الطلب' : 'Failed to generate proposal. Please try again.'));
       }
     } catch (err) {
       console.error('Error generating proposal:', err);
+      alert(isArabic ? 'تعذر الاتصال بالخادم. يرجى المحاولة لاحقاً.' : 'Network error. Please try again.');
     } finally {
       setIsGenerating(false);
     }
@@ -320,7 +324,7 @@ export default function ProposalAgentPage() {
                   3. {isArabic ? 'أهداف البحث (Research Objectives)' : 'Research Objectives'}
                 </h3>
                 <ul className="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-                  {proposal.objectives.map((obj, i) => (
+                  {((Array.isArray(proposal.objectives) ? proposal.objectives : [proposal.objectives].filter(Boolean)) as string[]).map((obj, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
                         {i + 1}
@@ -337,7 +341,12 @@ export default function ProposalAgentPage() {
                   4. {isArabic ? 'أسئلة البحث (Research Questions)' : 'Research Questions'}
                 </h3>
                 <ul className="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-                  {proposal.researchQuestions.map((q, i) => (
+                  {((Array.isArray(proposal.researchQuestions)
+                    ? proposal.researchQuestions
+                    : Array.isArray((proposal as any).questions)
+                    ? (proposal as any).questions
+                    : [(proposal.researchQuestions || (proposal as any).questions)].filter(Boolean)
+                  ) as string[]).map((q, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold">
                         Q{i + 1}
@@ -349,13 +358,13 @@ export default function ProposalAgentPage() {
               </div>
 
               {/* Hypotheses */}
-              {proposal.hypotheses && proposal.hypotheses.length > 0 && (
+              {((Array.isArray(proposal.hypotheses) ? proposal.hypotheses : [proposal.hypotheses].filter(Boolean)) as string[]).length > 0 && (
                 <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3">
                     5. {isArabic ? 'الفرضيات البحثية (Hypotheses)' : 'Hypotheses'}
                   </h3>
                   <ul className="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-                    {proposal.hypotheses.map((h, i) => (
+                    {((Array.isArray(proposal.hypotheses) ? proposal.hypotheses : [proposal.hypotheses].filter(Boolean)) as string[]).map((h, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-purple-100 text-purple-800 text-[10px] font-bold">
                           H{i + 1}
@@ -383,7 +392,12 @@ export default function ProposalAgentPage() {
                     {isArabic ? 'المساهمة الأكاديمية المتوقعة' : 'Potential Contributions'}
                   </h4>
                   <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
-                    {proposal.potentialContributions.map((c, i) => (
+                    {((Array.isArray(proposal.potentialContributions)
+                      ? proposal.potentialContributions
+                      : Array.isArray((proposal as any).expectedContribution)
+                      ? (proposal as any).expectedContribution
+                      : [(proposal.potentialContributions || (proposal as any).expectedContribution)].filter(Boolean)
+                    ) as string[]).map((c, i) => (
                       <li key={i} className="flex items-start gap-1.5">
                         <span className="text-emerald-600">•</span>
                         <span>{c}</span>

@@ -57,19 +57,33 @@ export async function generateResearchProposal(params: {
     const jsonMatch = result.content.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
+      const rawObjectives = parsed.objectives || [];
+      const objectives = Array.isArray(rawObjectives) ? rawObjectives : [rawObjectives].filter(Boolean);
+
+      const rawQuestions = parsed.questions || parsed.researchQuestions || [];
+      const questions = Array.isArray(rawQuestions) ? rawQuestions : [rawQuestions].filter(Boolean);
+
+      const rawContrib = parsed.potentialContributions || parsed.expectedContribution || [];
+      const contributions = Array.isArray(rawContrib) ? rawContrib : [rawContrib].filter(Boolean);
+
+      const rawSteps = parsed.suggestedNextSteps || [];
+      const nextSteps = Array.isArray(rawSteps) ? rawSteps : [rawSteps].filter(Boolean);
+
       return {
         id: `prop_${Date.now()}`,
         title: parsed.title || params.idea,
         background: parsed.background || '',
         problemStatement: parsed.problemStatement || '',
-        objectives: Array.isArray(parsed.objectives) ? parsed.objectives : [parsed.objectives],
-        questions: Array.isArray(parsed.questions) ? parsed.questions : [parsed.questions],
+        objectives: objectives.length > 0 ? objectives : ['تحديد المشكلة البحثية وصياغة الإطار النظري'],
+        questions: questions.length > 0 ? questions : ['ما هي العوامل الأساسية المؤثرة في الظاهرة المدروسة؟'],
+        researchQuestions: questions.length > 0 ? questions : ['ما هي العوامل الأساسية المؤثرة في الظاهرة المدروسة؟'],
         hypotheses: Array.isArray(parsed.hypotheses) ? parsed.hypotheses : [],
         scopeAndLimitations: parsed.scopeAndLimitations || '',
-        expectedContribution: parsed.expectedContribution || '',
-        suggestedNextSteps: parsed.suggestedNextSteps || '',
+        expectedContribution: typeof parsed.expectedContribution === 'string' ? parsed.expectedContribution : contributions.join('\n'),
+        potentialContributions: contributions.length > 0 ? contributions : ['إثراء البحث العلمي والتطبيقي في جامعة الشارقة'],
+        suggestedNextSteps: typeof parsed.suggestedNextSteps === 'string' ? parsed.suggestedNextSteps : nextSteps.join('\n'),
         updatedAt: new Date().toISOString()
-      };
+      } as any;
     }
   } catch {
     // If JSON parsing fails, structure cleanly from raw content
@@ -82,9 +96,12 @@ export async function generateResearchProposal(params: {
     problemStatement: result.content,
     objectives: ['تحليل المشكلة البحثية وتحديد الفجوات', 'تطبيق منهجية علمية رصينة'],
     questions: ['ما هي العوامل المؤثرة في الظاهرة المدروسة؟'],
+    researchQuestions: ['ما هي العوامل المؤثرة في الظاهرة المدروسة؟'],
+    hypotheses: ['توجد علاقة ارتباطية إيجابية ذات دلالة إحصائية بين المتغيرات'],
     scopeAndLimitations: 'جامعة الشارقة والمؤسسات الأكاديمية المماثلة.',
     expectedContribution: 'إثراء المكتبة العلمية بأدلة تجريبية حديثة.',
+    potentialContributions: ['إثراء المكتبة العلمية بأدلة تجريبية حديثة.'],
     suggestedNextSteps: 'الانتقال إلى مرحلة مسح الأدبيات واستخراج المراجع المعتمدة.',
     updatedAt: new Date().toISOString()
-  };
+  } as any;
 }

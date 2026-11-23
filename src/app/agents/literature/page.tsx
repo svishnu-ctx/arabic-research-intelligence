@@ -344,7 +344,7 @@ export default function LiteratureAgentPage() {
 
           {/* Themes Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {reviewResult.themes.map((theme, i) => (
+            {(Array.isArray(reviewResult.themes) ? reviewResult.themes : []).map((theme, i) => (
               <div
                 key={i}
                 className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-5 shadow-sm"
@@ -375,7 +375,7 @@ export default function LiteratureAgentPage() {
               <span>{isArabic ? 'الفجوات البحثية المستندة إلى الأدلة (Gaps)' : 'Evidence-Based Research Gaps'}</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-              {reviewResult.verifiedGaps.map((gap, i) => (
+              {(Array.isArray(reviewResult.verifiedGaps) ? reviewResult.verifiedGaps : []).map((gap, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <span className="text-amber-600 font-bold">•</span>
                   <span>{gap}</span>

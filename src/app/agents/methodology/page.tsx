@@ -257,7 +257,10 @@ export default function MethodologyAgentPage() {
                   {isArabic ? 'أدوات التحليل الإحصائي الموصى بها' : 'Recommended Analysis Steps'}
                 </h4>
                 <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
-                  {methodologyAdvice.dataAnalysisPlan.map((step, i) => (
+                  {((Array.isArray(methodologyAdvice.dataAnalysisPlan)
+                    ? methodologyAdvice.dataAnalysisPlan
+                    : [methodologyAdvice.dataAnalysisPlan].filter(Boolean)
+                  ) as string[]).map((step, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">•</span>
                       <span>{step}</span>
