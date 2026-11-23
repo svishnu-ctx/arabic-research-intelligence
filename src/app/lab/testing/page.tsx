@@ -56,7 +56,7 @@ export default function ModelTestingWorkspacePage() {
         const data = await res.json();
         if (data.success && Array.isArray(data.responses) && data.responses.length > 0) {
           setResults(data.responses);
-          setBackendStatus(data.executionMode === 'live-api' ? 'Live Gemini/HF API' : 'Full-Stack Persona Engine');
+          setBackendStatus(data.executionMode === 'native-arabic-models' ? 'Native Arabic AI Models' : data.executionMode);
           setIsRunning(false);
           return;
         }
