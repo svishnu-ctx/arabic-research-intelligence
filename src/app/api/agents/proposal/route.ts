@@ -5,7 +5,12 @@ import { ServerStorage } from '@/lib/server/storage';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { field, level, interests, idea, projectId, language } = body;
+    const field = body.field;
+    const idea = body.idea || body.initialIdea;
+    const level = body.level || body.academicLevel || 'Masters';
+    const interests = body.interests || body.researchInterests || field;
+    const language = body.language || 'ar';
+    const projectId = body.projectId;
 
     if (!idea || !field) {
       return NextResponse.json(
@@ -16,10 +21,10 @@ export async function POST(req: NextRequest) {
 
     const proposal = await generateResearchProposal({
       field,
-      level: level || 'Masters',
-      interests: interests || field,
+      level,
+      interests,
       idea,
-      language: language || 'ar',
+      language: language === 'en' ? 'en' : 'ar',
     });
 
     if (projectId) {

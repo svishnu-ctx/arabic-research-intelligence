@@ -5,7 +5,11 @@ import { ServerStorage } from '@/lib/server/storage';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { chapterTitle, chapterContent, projectId, chapterId, projectContext } = body;
+    const chapterTitle = body.chapterTitle;
+    const chapterContent = body.chapterContent || body.content;
+    const projectId = body.projectId;
+    const chapterId = body.chapterId;
+    const projectContext = body.projectContext;
 
     if (!chapterTitle || !chapterContent) {
       return NextResponse.json(

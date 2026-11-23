@@ -5,11 +5,9 @@ import { AcademicPaperResult } from '@/lib/publications/openalex';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { topic, publications, language } = body as {
-      topic: string;
-      publications: AcademicPaperResult[];
-      language?: 'ar' | 'en';
-    };
+    const topic = body.topic;
+    const publications = body.publications || body.papers || [];
+    const language = body.language || 'ar';
 
     if (!topic || !Array.isArray(publications) || publications.length === 0) {
       return NextResponse.json(
@@ -21,7 +19,7 @@ export async function POST(req: NextRequest) {
     const synthesis = await generateLiteratureSynthesis({
       topic,
       publications,
-      language: language || 'ar',
+      language: language === 'en' ? 'en' : 'ar',
     });
 
     return NextResponse.json({

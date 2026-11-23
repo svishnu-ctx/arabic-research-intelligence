@@ -5,11 +5,23 @@ import { ServerStorage } from '@/lib/server/storage';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { projectId } = body;
+    const { projectId, thesisTitle, methodologySummary, academicLevel } = body;
 
-    const project = projectId ? ServerStorage.getProject(projectId) : ServerStorage.listProjects()[0];
+    let project = projectId ? ServerStorage.getProject(projectId) : ServerStorage.listProjects()[0];
     if (!project) {
-      return NextResponse.json({ success: false, error: 'Project not found.' }, { status: 404 });
+      project = {
+        id: 'proj_default',
+        studentId: 'usr_student',
+        title: thesisTitle || 'Optimizing Renewable Energy Microgrids in Sharjah',
+        researchField: 'Computer Science & Sustainable Engineering',
+        academicLevel: academicLevel || 'Master’s Thesis',
+        description: methodologySummary || 'Academic research methodology and AI modeling',
+        status: 'ACTIVE',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    } else if (thesisTitle) {
+      project.title = thesisTitle;
     }
 
     const questions = await generateDefenseQuestions(project);

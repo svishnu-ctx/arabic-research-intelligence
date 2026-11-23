@@ -5,11 +5,22 @@ import { ServerStorage } from '@/lib/server/storage';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { topic, researchType, level, questions, objectives, projectId } = body;
+    const topic = body.topic;
+    const rawType = String(body.researchType || 'Quantitative');
+    const researchType: 'Quantitative' | 'Qualitative' | 'Mixed-Methods' =
+      rawType.toUpperCase().includes('QUANT')
+        ? 'Quantitative'
+        : rawType.toUpperCase().includes('QUAL')
+        ? 'Qualitative'
+        : 'Mixed-Methods';
+    const level = body.level || body.academicLevel || 'Masters';
+    const questions = body.questions;
+    const objectives = body.objectives;
+    const projectId = body.projectId;
 
-    if (!topic || !researchType) {
+    if (!topic) {
       return NextResponse.json(
-        { success: false, error: 'Topic and research type are required.' },
+        { success: false, error: 'Topic is required.' },
         { status: 400 }
       );
     }
@@ -17,7 +28,7 @@ export async function POST(req: NextRequest) {
     const methodology = await generateMethodologyPlan({
       topic,
       researchType,
-      level: level || 'Masters',
+      level,
       questions,
       objectives,
     });
