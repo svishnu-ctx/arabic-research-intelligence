@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { reviewThesisChapter } from '@/lib/agents/thesis';
 import { ServerStorage } from '@/lib/server/storage';
 
+export const maxDuration = 60;
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

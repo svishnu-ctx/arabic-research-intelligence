@@ -113,9 +113,13 @@ export default function LiteratureAgentPage() {
       if (res.ok) {
         const data = await res.json();
         setReviewResult(data.synthesis);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        alert(errData.error || (isArabic ? 'تعذر توليف الأدبيات. يرجى المحاولة مرة أخرى.' : 'Synthesis failed. Please try again.'));
       }
     } catch (err) {
       console.error('Synthesis error:', err);
+      alert(isArabic ? 'تعذر الاتصال بالخادم. يرجى المحاولة لاحقاً.' : 'Connection error. Please try again.');
     } finally {
       setIsSynthesizing(false);
     }
@@ -344,28 +348,38 @@ export default function LiteratureAgentPage() {
 
           {/* Themes Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {(Array.isArray(reviewResult.themes) ? reviewResult.themes : []).map((theme, i) => (
-              <div
-                key={i}
-                className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-5 shadow-sm"
-              >
-                <div className="flex items-center gap-2 text-xs font-bold text-blue-700 dark:text-blue-400">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-[10px]">
-                    {i + 1}
-                  </span>
-                  <span>{theme.theme}</span>
-                </div>
-                <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {theme.description}
-                </p>
-                {theme.supportingPapers && theme.supportingPapers.length > 0 && (
-                  <div className="mt-3 text-[11px] text-slate-400">
-                    <span className="font-semibold">{isArabic ? 'الدراسات الداعمة:' : 'Evidence:'}</span>{' '}
-                    {theme.supportingPapers.join(', ')}
+            {(Array.isArray(reviewResult.themes) ? reviewResult.themes : []).map((theme: any, i) => {
+              const themeTitle = theme.theme || theme.title || `Theme ${i + 1}`;
+              const themeDesc = theme.description || theme.summary || '';
+              const papersList: string[] = Array.isArray(theme.supportingPapers)
+                ? theme.supportingPapers
+                : Array.isArray(theme.papersIncluded)
+                ? theme.papersIncluded
+                : [];
+
+              return (
+                <div
+                  key={i}
+                  className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-5 shadow-sm"
+                >
+                  <div className="flex items-center gap-2 text-xs font-bold text-blue-700 dark:text-blue-400">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-[10px]">
+                      {i + 1}
+                    </span>
+                    <span>{themeTitle}</span>
                   </div>
-                )}
-              </div>
-            ))}
+                  <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {themeDesc}
+                  </p>
+                  {papersList.length > 0 && (
+                    <div className="mt-3 text-[11px] text-slate-400">
+                      <span className="font-semibold">{isArabic ? 'الدراسات الداعمة:' : 'Evidence:'}</span>{' '}
+                      {papersList.join(', ')}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Verified Research Gaps */}
@@ -375,7 +389,11 @@ export default function LiteratureAgentPage() {
               <span>{isArabic ? 'الفجوات البحثية المستندة إلى الأدلة (Gaps)' : 'Evidence-Based Research Gaps'}</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-              {(Array.isArray(reviewResult.verifiedGaps) ? reviewResult.verifiedGaps : []).map((gap, i) => (
+              {((Array.isArray(reviewResult.verifiedGaps)
+                ? reviewResult.verifiedGaps
+                : Array.isArray((reviewResult as any).researchGaps)
+                ? (reviewResult as any).researchGaps
+                : []) as string[]).map((gap, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <span className="text-amber-600 font-bold">•</span>
                   <span>{gap}</span>

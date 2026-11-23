@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateLiteratureSynthesis } from '@/lib/agents/literature';
-import { AcademicPaperResult } from '@/lib/publications/openalex';
+
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
       provider: 'Fanar AI (QCRI)',
     });
   } catch (error) {
+    console.error('Literature synthesis route error:', error);
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Literature synthesis failed' },
       { status: 500 }
