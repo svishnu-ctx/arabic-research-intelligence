@@ -98,7 +98,7 @@ export default function ReferencesPage() {
               </div>
 
               <button
-                title="Copy APA Citation"
+                title={isArabic ? 'نسخ الاستشهاد بصيغة APA' : 'Copy APA Citation'}
                 className="rounded-xl border border-slate-200 dark:border-slate-700 p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0"
               >
                 <Copy className="h-4 w-4" />

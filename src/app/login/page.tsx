@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/context';
 import { useI18n } from '@/lib/i18n/context';
+import { useTheme } from '@/lib/theme/context';
 import {
   GraduationCap,
   Lock,
@@ -17,12 +18,15 @@ import {
   HelpCircle,
   Sparkles,
   CheckCircle2,
-  X
+  X,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export default function StudentLoginPage() {
   const { login } = useAuth();
   const { t, language, setLanguage, direction } = useI18n();
+  const { theme, toggleTheme } = useTheme();
   const router = useRouter();
 
   const isArabic = language === 'ar';
@@ -72,11 +76,20 @@ export default function StudentLoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8" dir={direction}>
-      {/* Language Switcher Bar */}
-      <div className="absolute top-6 end-6">
+      {/* Language & Theme Controls Bar */}
+      <div className="absolute top-6 end-6 flex items-center gap-2">
+        <button
+          onClick={toggleTheme}
+          className="flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+          title="Toggle Theme / تبديل المظهر"
+        >
+          {theme === 'light' ? <Moon className="h-3.5 w-3.5 text-slate-500" /> : <Sun className="h-3.5 w-3.5 text-amber-400" />}
+          <span>{theme === 'light' ? 'Dark' : 'Light'}</span>
+        </button>
+
         <button
           onClick={() => setLanguage(isArabic ? 'en' : 'ar')}
-          className="flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-100 transition"
+          className="flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition"
         >
           <Globe className="h-4 w-4 text-emerald-600" />
           <span>{isArabic ? 'English (EN)' : 'العربية (AR)'}</span>

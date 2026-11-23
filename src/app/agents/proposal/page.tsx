@@ -45,7 +45,11 @@ export default function ProposalAgentPage() {
   const [initialIdea, setInitialIdea] = useState(
     'Using deep reinforcement learning to balance intermittent solar power in smart microgrids within the UAE climate.'
   );
-  const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>('ar');
+  const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
+
+  React.useEffect(() => {
+    setTargetLanguage(isArabic ? 'ar' : 'en');
+  }, [isArabic]);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [proposal, setProposal] = useState<ProposalData | null>(null);

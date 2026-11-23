@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n/context';
+import { useTheme } from '@/lib/theme/context';
 import {
   Settings,
   Sparkles,
@@ -12,11 +13,14 @@ import {
   ShieldCheck,
   Server,
   Key,
-  Globe
+  Globe,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export default function SettingsPage() {
   const { language, setLanguage, direction } = useI18n();
+  const { theme, setTheme } = useTheme();
   const isArabic = language === 'ar';
 
   const [fanarStatus, setFanarStatus] = useState<any>(null);
@@ -190,22 +194,85 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4">
-              {isArabic ? 'تفضيلات اللغة والعرض' : 'Language & Display Preferences'}
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+              {isArabic ? 'تفضيلات اللغة والمظهر' : 'Language & Appearance Preferences'}
             </h3>
 
+            {/* Language Switch */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {isArabic ? 'لغة الواجهة (Interface Language)' : 'Interface Language'}
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  {isArabic ? 'التبديل بين العربية والإنجليزية' : 'Switch between Arabic and English'}
+                </div>
+              </div>
+
+              <div className="flex rounded-xl bg-slate-100 dark:bg-slate-900 p-1">
+                <button
+                  type="button"
+                  onClick={() => setLanguage('ar')}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                    isArabic
+                      ? 'bg-emerald-700 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  العربية
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage('en')}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                    !isArabic
+                      ? 'bg-emerald-700 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  English
+                </button>
+              </div>
+            </div>
+
+            {/* Theme Switch */}
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-600 dark:text-slate-400">
-                {isArabic ? 'لغة الواجهة الرئيسية' : 'Interface Language'}
-              </span>
-              <button
-                onClick={() => setLanguage(isArabic ? 'en' : 'ar')}
-                className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 text-xs font-semibold"
-              >
-                <Globe className="h-3.5 w-3.5 text-emerald-600" />
-                <span>{isArabic ? 'English (EN)' : 'العربية (AR)'}</span>
-              </button>
+              <div>
+                <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {isArabic ? 'المظهر (Color Theme)' : 'Color Theme'}
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  {isArabic ? 'التبديل بين الوضع المظلم والفاتح' : 'Switch between Dark and Light mode'}
+                </div>
+              </div>
+
+              <div className="flex rounded-xl bg-slate-100 dark:bg-slate-900 p-1">
+                <button
+                  type="button"
+                  onClick={() => setTheme('light')}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                    theme === 'light'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Sun className="h-3.5 w-3.5 text-amber-500" />
+                  <span>{isArabic ? 'فاتح' : 'Light'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('dark')}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                    theme === 'dark'
+                      ? 'bg-slate-800 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Moon className="h-3.5 w-3.5 text-indigo-400" />
+                  <span>{isArabic ? 'داكن' : 'Dark'}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

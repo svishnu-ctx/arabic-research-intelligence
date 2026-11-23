@@ -208,19 +208,19 @@ export default function StudentDashboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
             <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
               <CheckCircle2 className="h-3.5 w-3.5" />
-              <span>1. المقترح (100%)</span>
+              <span>{isArabic ? '1. المقترح (100%)' : '1. Proposal (100%)'}</span>
             </div>
             <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
               <CheckCircle2 className="h-3.5 w-3.5" />
-              <span>2. الأدبيات (85%)</span>
+              <span>{isArabic ? '2. الأدبيات (85%)' : '2. Literature (85%)'}</span>
             </div>
             <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
               <Clock className="h-3.5 w-3.5" />
-              <span>3. المنهجية (60%)</span>
+              <span>{isArabic ? '3. المنهجية (60%)' : '3. Methodology (60%)'}</span>
             </div>
             <div className="flex items-center gap-1.5 text-slate-400">
               <Clock className="h-3.5 w-3.5" />
-              <span>4. الأطروحة (30%)</span>
+              <span>{isArabic ? '4. الأطروحة (30%)' : '4. Thesis (30%)'}</span>
             </div>
           </div>
         </div>
@@ -446,7 +446,9 @@ export default function StudentDashboardPage() {
                   {isArabic ? 'صياغة مشكلة البحث وأهداف الدراسة الأولية' : 'Draft Research Problem & Objectives'}
                 </span>
               </div>
-              <span className="text-[10px] font-bold text-emerald-700">Done</span>
+              <span className="text-[10px] font-bold text-emerald-700">
+                {isArabic ? 'مكتمل' : 'Done'}
+              </span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/30 dark:bg-amber-950/20 text-xs">
@@ -459,7 +461,9 @@ export default function StudentDashboardPage() {
                   {isArabic ? 'مقارنة 4 دراسات إماراتية في مصفوفة الأدبيات' : 'Compare 4 regional studies in Literature Matrix'}
                 </span>
               </div>
-              <span className="text-[10px] font-bold text-amber-700">Due Tomorrow</span>
+              <span className="text-[10px] font-bold text-amber-700">
+                {isArabic ? 'مستحق غداً' : 'Due Tomorrow'}
+              </span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 text-xs">
@@ -472,7 +476,9 @@ export default function StudentDashboardPage() {
                   {isArabic ? 'تشغيل فحص نقد الأطروحة لفصل المنهجية' : 'Run Viva simulation for Chapter 3 Methodology'}
                 </span>
               </div>
-              <span className="text-[10px] font-bold text-slate-500">Next Week</span>
+              <span className="text-[10px] font-bold text-slate-500">
+                {isArabic ? 'الأسبوع القادم' : 'Next Week'}
+              </span>
             </div>
           </div>
         </div>

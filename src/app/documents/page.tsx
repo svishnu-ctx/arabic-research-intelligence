@@ -20,31 +20,31 @@ export default function DocumentsPage() {
   const documents = [
     {
       name: 'Sharjah_Solar_Microgrids_Proposal_v2.pdf',
-      type: 'Research Proposal',
+      type: isArabic ? 'مقترح بحثي' : 'Research Proposal',
       size: '2.4 MB',
       updatedAt: '2026-11-22',
-      status: 'Approved by Supervisor',
+      status: isArabic ? 'معتمد من المشرف' : 'Approved by Supervisor',
     },
     {
       name: 'Methodology_Architecture_Diagram.png',
-      type: 'Figure / Diagram',
+      type: isArabic ? 'مخطط معماري / رسم' : 'Figure / Diagram',
       size: '1.1 MB',
       updatedAt: '2026-11-21',
-      status: 'Draft',
+      status: isArabic ? 'مسودة أولية' : 'Draft',
     },
     {
       name: 'sharjah_solar_microgrid_dataset_2025.csv',
-      type: 'Dataset',
+      type: isArabic ? 'مجموعة بيانات' : 'Dataset',
       size: '480 KB',
       updatedAt: '2026-11-20',
-      status: 'Analyzed',
+      status: isArabic ? 'تم التحليل' : 'Analyzed',
     },
     {
       name: 'Thesis_Chapter_1_and_2_Draft.docx',
-      type: 'Thesis Draft',
+      type: isArabic ? 'مسودة فصول الأطروحة' : 'Thesis Draft',
       size: '3.8 MB',
       updatedAt: '2026-11-19',
-      status: 'In Review',
+      status: isArabic ? 'قيد المراجعة' : 'In Review',
     },
   ];
 

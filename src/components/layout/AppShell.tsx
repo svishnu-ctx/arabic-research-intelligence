@@ -317,19 +317,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button
               onClick={toggleTheme}
               className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-              title="Toggle Theme"
+              title={isArabic ? 'تبديل المظهر (داكن / فاتح)' : 'Toggle Theme (Dark / Light)'}
             >
               {theme === 'light' ? <Moon className="h-3.5 w-3.5 text-slate-500" /> : <Sun className="h-3.5 w-3.5 text-amber-400" />}
-              <span className="hidden sm:inline">{theme === 'light' ? 'Dark' : 'Light'}</span>
+              <span className="hidden sm:inline">
+                {theme === 'light' ? (isArabic ? 'داكن' : 'Dark') : (isArabic ? 'فاتح' : 'Light')}
+              </span>
             </button>
 
             {/* Language Toggle */}
             <button
               onClick={() => setLanguage(isArabic ? 'en' : 'ar')}
               className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+              title={isArabic ? 'تغيير اللغة إلى الإنجليزية' : 'Switch Language to Arabic'}
             >
               <Globe className="h-3.5 w-3.5 text-emerald-600" />
-              <span>{isArabic ? 'English' : 'العربية'}</span>
+              <span>{isArabic ? 'English (EN)' : 'العربية (AR)'}</span>
             </button>
           </div>
         </header>
