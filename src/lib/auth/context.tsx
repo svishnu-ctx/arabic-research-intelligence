@@ -7,37 +7,56 @@ interface AuthContextType {
   user: User | null;
   csrfToken: string | null;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<{ success: boolean; error?: string; retryAfter?: number }>;
+  login: (username?: string, password?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const STORAGE_KEY = 'mock_auth_user_session';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [csrfToken, setCsrfToken] = useState<string | null>(null);
+  const [csrfToken, setCsrfToken] = useState<string | null>('mock-csrf-token-2026');
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const refreshSession = useCallback(async () => {
     try {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored) as User;
+          setUser(parsed);
+          setCsrfToken('mock-csrf-token-2026');
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Try server session if available
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();
         if (data.authenticated && data.user) {
           setUser(data.user);
-          setCsrfToken(data.csrfToken);
+          setCsrfToken(data.csrfToken || 'mock-csrf-token-2026');
         } else {
           setUser(null);
-          setCsrfToken(null);
         }
       } else {
         setUser(null);
-        setCsrfToken(null);
       }
     } catch {
-      setUser(null);
-      setCsrfToken(null);
+      // Mock fallback: if server not reachable, check localStorage or keep null
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          setUser(JSON.parse(stored));
+        } else {
+          setUser(null);
+        }
+      }
     } finally {
       setIsLoading(false);
     }
@@ -47,39 +66,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refreshSession();
   }, [refreshSession]);
 
-  const login = async (username: string, password: string) => {
+  const login = async (username: string = 'researcher', password?: string) => {
     setIsLoading(true);
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
 
-      const data = await res.json();
+    const cleanUsername = username.trim() || 'researcher';
+    const displayName = cleanUsername === 'researcher' || cleanUsername === 'scholar_demo'
+      ? 'د. باحث أكاديمي / Academic Researcher'
+      : cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1);
 
-      if (res.ok && data.success) {
-        setUser(data.user);
-        setCsrfToken(data.csrfToken);
-        setIsLoading(false);
-        return { success: true };
-      } else {
-        setIsLoading(false);
-        const retryAfter = res.status === 429 ? Number(res.headers.get('Retry-After') || 600) : undefined;
-        return { success: false, error: data.error || 'Authentication failed', retryAfter };
-      }
-    } catch {
-      setIsLoading(false);
-      return { success: false, error: 'Network error or server unreachable' };
+    const mockUser: User = {
+      id: `usr_${Date.now()}`,
+      username: cleanUsername,
+      role: 'admin', // Full universal access to all research and evaluation modules
+      displayName,
+      email: `${cleanUsername.toLowerCase().replace(/\s+/g, '_')}@sharjah.ac.ae`,
+    };
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(mockUser));
     }
+
+    setUser(mockUser);
+    setCsrfToken('mock-csrf-token-2026');
+    setIsLoading(false);
+
+    return { success: true };
   };
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : {},
-      });
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
     } finally {
       setUser(null);
       setCsrfToken(null);

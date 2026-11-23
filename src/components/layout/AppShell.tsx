@@ -36,44 +36,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
-  if (!user) {
+  if (!user || pathname?.startsWith('/lab')) {
     return <>{children}</>;
   }
 
-  const roleNavItems = {
-    admin: [
-      { href: '/dashboard/admin', label: t.nav.dashboard, icon: LayoutDashboard },
-      { href: '/dashboard/admin/insights', label: t.nav.researchInsights, icon: Sparkles },
-      { href: '/dashboard/admin/corpus', label: t.nav.researchCorpus, icon: Library },
-    ],
-    supervisor: [
-      { href: '/dashboard/supervisor', label: t.nav.dashboard, icon: LayoutDashboard },
-      { href: '/dashboard/supervisor/shared', label: t.nav.sharedPapers, icon: BookOpen },
-      { href: '/dashboard/supervisor/review', label: t.nav.aiReview, icon: FileCheck2 },
-    ],
-    scholar: [
-      { href: '/dashboard/scholar', label: t.nav.dashboard, icon: LayoutDashboard },
-      { href: '/dashboard/scholar/papers', label: t.nav.myPapers, icon: FileText },
-      { href: '/dashboard/scholar/literature', label: t.nav.literatureResearch, icon: Search },
-      { href: '/dashboard/scholar/compare', label: t.nav.comparePapers, icon: ArrowLeftRight },
-      { href: '/dashboard/scholar/opportunities', label: t.nav.researchOpportunities, icon: Lightbulb },
-    ],
-    student: [
-      { href: '/dashboard/student', label: t.nav.dashboard, icon: LayoutDashboard },
-      { href: '/dashboard/student/documents', label: t.nav.myDocuments, icon: FileCode },
-      { href: '/dashboard/student/intelligence', label: t.nav.documentIntelligence, icon: Sparkles },
-      { href: '/dashboard/student/assistant', label: t.nav.academicAssistant, icon: GraduationCap },
-    ],
-  };
-
-  const navItems = roleNavItems[user.role] || [];
+  // Unified academic navigation - All roles unified into single workspace
+  const navItems = [
+    { href: '/dashboard', label: t.nav.dashboard, icon: LayoutDashboard },
+    { href: '/dashboard/scholar/papers', label: t.nav.myPapers, icon: FileText },
+    { href: '/dashboard/scholar/compare', label: t.nav.comparePapers, icon: ArrowLeftRight },
+    { href: '/dashboard/scholar/literature', label: t.nav.literatureResearch, icon: Search },
+    { href: '/dashboard/student/intelligence', label: t.nav.documentIntelligence, icon: Sparkles },
+    { href: '/dashboard/student/assistant', label: t.nav.academicAssistant, icon: GraduationCap },
+    { href: '/dashboard/supervisor/review', label: t.nav.aiReview, icon: FileCheck2 },
+    { href: '/dashboard/admin/insights', label: t.nav.researchInsights, icon: Lightbulb },
+  ];
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900" dir={direction}>
       {/* Desktop Sidebar */}
       <aside className="hidden w-72 flex-col border-e border-slate-200 bg-white shadow-sm md:flex">
         <div className="flex h-16 items-center border-b border-slate-100 px-6">
-          <div className="flex items-center gap-3">
+          <Link href="/dashboard" className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-700 text-white shadow">
               <Sparkles className="h-5 w-5" />
             </div>
@@ -85,16 +69,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {t.common.appName}
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
-        {/* User Role Card */}
+        {/* AI Evaluation Lab Direct Shortcut */}
         <div className="p-4">
+          <Link
+            href="/lab/dashboard"
+            className="flex items-center justify-between rounded-xl border border-indigo-100 bg-indigo-50/80 p-3 hover:bg-indigo-100 transition"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-indigo-700" />
+              <span className="text-xs font-bold text-indigo-950">
+                {language === 'ar' ? 'مختبر تقييم الذكاء الاصطناعي' : 'AI Evaluation Lab'}
+              </span>
+            </div>
+            <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white">
+              NEW
+            </span>
+          </Link>
+        </div>
+
+        {/* User Card - Role-free */}
+        <div className="px-4 pb-2">
           <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-start">
             <div className="flex items-center gap-2">
-              <UserIcon className="h-4 w-4 text-slate-500" />
-              <span className="text-xs font-medium text-slate-500">
-                {t.roles[user.role]}
+              <UserIcon className="h-4 w-4 text-emerald-700" />
+              <span className="text-xs font-semibold text-emerald-800">
+                {t.common.universityName}
               </span>
             </div>
             <div className="mt-1 truncate text-sm font-semibold text-slate-800">
@@ -107,7 +109,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 space-y-1 px-4">
+        <nav className="flex-1 space-y-1 px-4 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -155,9 +157,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                {t.roles[user.role]}
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+                <Sparkles className="h-3.5 w-3.5" />
+                {language === 'ar' ? 'المنصة الأكاديمية الموحدة' : 'Unified Academic Workspace'}
               </span>
             </div>
           </div>

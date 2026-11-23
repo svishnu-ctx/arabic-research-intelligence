@@ -18,7 +18,7 @@ export default function SupervisorDashboardPage() {
           <div>
             <div className="flex items-center gap-2">
               <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800">
-                {t.roles.supervisor}
+                {t.common.universityName}
               </span>
             </div>
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">

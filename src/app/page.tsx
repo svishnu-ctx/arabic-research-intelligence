@@ -26,10 +26,19 @@ export default function HomePage() {
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
+          <Link
+            href="/lab/dashboard"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-indigo-800 transition"
+          >
+            <Sparkles className="h-4 w-4" />
+            <span>مختبر تقييم الذكاء الاصطناعي العربي (AI Evaluation Lab)</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+
           {user ? (
             <Link
-              href={`/dashboard/${user.role}`}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-800 transition"
+              href="/dashboard"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 hover:bg-slate-200 px-6 py-3 text-sm font-semibold text-slate-800 transition"
             >
               <span>الانتقال إلى {t.nav.dashboard}</span>
               <ArrowRight className="h-4 w-4" />
@@ -37,7 +46,7 @@ export default function HomePage() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-800 transition"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 hover:bg-slate-200 px-6 py-3 text-sm font-semibold text-slate-800 transition"
             >
               <span>{t.auth.signIn}</span>
               <ArrowRight className="h-4 w-4" />

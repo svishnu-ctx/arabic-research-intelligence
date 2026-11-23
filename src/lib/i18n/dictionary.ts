@@ -128,14 +128,46 @@ export interface Dictionary {
     unavailableTitle: string;
     unavailableDesc: string;
   };
+  labNav: {
+    dashboard: string;
+    models: string;
+    benchmarks: string;
+    testing: string;
+    expertReview: string;
+    speech: string;
+    comparison: string;
+    reports: string;
+    settings: string;
+  };
+  lab: {
+    appTitle: string;
+    appSubtitle: string;
+    demoBadge: string;
+    modelsEvaluated: string;
+    benchmarkTests: string;
+    expertReviews: string;
+    leadingModel: string;
+    averageScore: string;
+    modelOverview: string;
+    evaluationCoverage: string;
+    recentActivity: string;
+    recommendationPreview: string;
+    quickActions: string;
+    compareModels: string;
+    runTest: string;
+    addModel: string;
+    addBenchmark: string;
+    submitReview: string;
+    exportReport: string;
+  };
 }
 
 export const dictionaries: Record<Language, Dictionary> = {
   ar: {
     common: {
-      appName: 'ذكاء البحث الأكاديمي العربي',
+      appName: 'مختبر تقييم الذكاء الاصطناعي العربي',
       universityName: 'جامعة الشارقة',
-      tagline: 'المساعد الذكي للأبحاث الأكاديمية باللغتين العربية والإنجليزية',
+      tagline: 'منصة تقييم ومقارنة نماذج الذكاء الاصطناعي وتقنيات الصوت باللغة العربية',
       loading: 'جاري التحميل...',
       error: 'حدث خطأ غير متوقع',
       retry: 'إعادة المحاولة',
@@ -259,12 +291,44 @@ export const dictionaries: Record<Language, Dictionary> = {
       unavailableTitle: 'محرك التحليل الذكي غير مهيأ حالياً',
       unavailableDesc: 'لم يتم تزويد مفتاح Google Gemini API أو لم يتم استكمال التحقق من الخدمة. يمكنك تصفح المستندات والبيانات الوصفية بأمان.',
     },
+    labNav: {
+      dashboard: 'لوحة التقييم',
+      models: 'سجل النماذج',
+      benchmarks: 'مكتبة الاختبارات',
+      testing: 'مساحة اختبار النماذج',
+      expertReview: 'مراجعة الخبراء',
+      speech: 'تقييم الكلام والصوت',
+      comparison: 'مقارنة الأداء',
+      reports: 'تقارير التقييم',
+      settings: 'الإعدادات',
+    },
+    lab: {
+      appTitle: 'مختبر تقييم الذكاء الاصطناعي العربي',
+      appSubtitle: 'تقييم ومقارنة واختيار التقنيات اللغوية والصوتية الملائمة للتميز الأكاديمي',
+      demoBadge: 'بيئة عرض تجريبية (بيانات استرشادية)',
+      modelsEvaluated: 'النماذج الخاضعة للتقييم',
+      benchmarkTests: 'اختبارات المعايرة الأكاديمية',
+      expertReviews: 'المراجعات الخبيرة المنجزة',
+      leadingModel: 'النموذج المتصدر',
+      averageScore: 'متوسط درجة التقييم',
+      modelOverview: 'نظرة عامة على أداء النماذج',
+      evaluationCoverage: 'تغطية محاور التقييم',
+      recentActivity: 'أحدث أنشطة التقييم اللغوي',
+      recommendationPreview: 'ملخص توصيات الاختيار المؤسسي',
+      quickActions: 'إجراءات سريعة',
+      compareModels: 'مقارنة النماذج',
+      runTest: 'تشغيل محاكاة الاختبار',
+      addModel: 'إضافة نموذج جديد',
+      addBenchmark: 'إضافة اختبار قياسي',
+      submitReview: 'اعتماد المراجعة اللغوية',
+      exportReport: 'تصدير التقرير التنفيذي',
+    },
   },
   en: {
     common: {
-      appName: 'Arabic Research Intelligence',
+      appName: 'Arabic AI Evaluation Lab',
       universityName: 'University of Sharjah',
-      tagline: 'AI Research Copilot for Arabic & English Academic Research',
+      tagline: 'Evaluation workspace for Arabic AI language models and speech technologies',
       loading: 'Loading...',
       error: 'An unexpected error occurred',
       retry: 'Retry',
@@ -387,6 +451,38 @@ export const dictionaries: Record<Language, Dictionary> = {
       compareButton: 'Generate Comparative Analysis',
       unavailableTitle: 'AI Research Engine Currently Unavailable',
       unavailableDesc: 'Google Gemini API key has not been configured or Phase 0 verification is pending. Document metadata and textual context remain fully browsable.',
+    },
+    labNav: {
+      dashboard: 'Evaluation Dashboard',
+      models: 'Model Registry',
+      benchmarks: 'Benchmark Library',
+      testing: 'Model Testing',
+      expertReview: 'Expert Review',
+      speech: 'Speech Evaluation',
+      comparison: 'Performance Comparison',
+      reports: 'Evaluation Reports',
+      settings: 'Settings',
+    },
+    lab: {
+      appTitle: 'Arabic AI Evaluation Lab',
+      appSubtitle: 'Evaluate, compare and select the right AI technologies for academic excellence.',
+      demoBadge: 'Demonstration Workspace (Illustrative Data)',
+      modelsEvaluated: 'Models Evaluated',
+      benchmarkTests: 'Benchmark Tests',
+      expertReviews: 'Expert Reviews Completed',
+      leadingModel: 'Leading Model',
+      averageScore: 'Average Evaluation Score',
+      modelOverview: 'Model Performance Overview',
+      evaluationCoverage: 'Evaluation Coverage',
+      recentActivity: 'Recent Evaluation Activity',
+      recommendationPreview: 'Model Recommendation Preview',
+      quickActions: 'Quick Actions',
+      compareModels: 'Compare Models',
+      runTest: 'Run Simulated Test',
+      addModel: 'Register Model',
+      addBenchmark: 'Add Benchmark',
+      submitReview: 'Submit Expert Review',
+      exportReport: 'Export Report',
     },
   },
 };
