@@ -90,6 +90,28 @@ export const LAB_MODELS: AIModel[] = [
     licenseStatus: 'Apache 2.0 Open Source'
   },
   {
+    id: 'silma',
+    name: 'SILMA 9B',
+    developer: 'SILMA AI',
+    country: 'Regional / Open Source',
+    category: 'llm',
+    languageFocus: 'bilingual',
+    capabilities: ['Arabic-English generation', 'Document understanding', 'Retrieval-based Q&A', 'Focused academic tasks'],
+    capabilitiesAr: ['توليد متوازن عربي-إنجليزي', 'استيعاب وتلخيص المستندات', 'استرجاع المعرفة والإجابة (RAG)', 'معالجة المهام البحثية المتخصصة'],
+    evaluationStatus: 'evaluated',
+    lastTestedDate: '2026-11-20',
+    version: '9B-Instruct (Illustrative)',
+    parameters: '9 Billion',
+    overallScore: 83,
+    arabicFluency: 84,
+    academicWriting: 82,
+    researchUnderstanding: 84,
+    bilingualPerformance: 86,
+    latencyMs: 290,
+    estimatedCostPer1kTokens: '$0.0007',
+    licenseStatus: 'Apache 2.0 Open Source'
+  },
+  {
     id: 'whisper',
     name: 'OpenAI Whisper v3',
     developer: 'OpenAI',
@@ -272,6 +294,18 @@ export const DEMO_TESTING_RESPONSES: Record<string, ModelTestingResponse[]> = {
       academicReasoningScore: 82,
       naturalnessScore: 83,
       terminologyScore: 84
+    },
+    {
+      modelId: 'silma',
+      modelName: 'SILMA 9B (SILMA AI)',
+      arabicResponse: 'تعتبر المراجعة المنهجية للأدبيات ركيزة أساسية لاستخراج الأدلة البحثية. يتم تحديد الفجوة المعرفية من خلال استرجاع النتائج المتناقضة في الأوراق المنشورة، وتحديد المتغيرات التي لم يتم قياسها في سياق المجتمع المستهدف.',
+      responseTimeMs: 290,
+      tokenCount: 114,
+      estimatedCostUSD: '$0.00008',
+      fluencyScore: 84,
+      academicReasoningScore: 83,
+      naturalnessScore: 84,
+      terminologyScore: 85
     }
   ]
 };

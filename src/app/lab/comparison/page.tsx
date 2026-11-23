@@ -116,7 +116,7 @@ export default function PerformanceComparisonPage() {
       </div>
 
       {/* Recommended Use Cases Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-2">
           <div className="text-xs font-bold uppercase tracking-wider text-indigo-600">
             {language === 'ar' ? 'أفضل نموذج للصياغة العربية' : 'Best for Arabic Academic Writing'}
@@ -138,6 +138,18 @@ export default function PerformanceComparisonPage() {
             {language === 'ar'
               ? 'أداء متفوق في التبديل السلس بين الإنجليزية والعربية في المصطلحات العلمية والمعادلات الرياضية.'
               : 'Superior performance in cross-lingual literature retrieval and scientific code-switching.'}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-indigo-600">
+            {language === 'ar' ? 'أفضل نموذج لاسترجاع المستندات' : 'Best for Document Q&A (RAG)'}
+          </div>
+          <h3 className="text-base font-extrabold text-slate-900 dark:text-white">SILMA 9B (SILMA AI)</h3>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            {language === 'ar'
+              ? 'زمن استجابة فائق السرعة (290ms) مع استيعاب دقيق للوثائق واستخلاص الإجابات البحثية المركزة.'
+              : 'Ultra-low latency (290ms) optimized for retrieval-augmented generation and document summaries.'}
           </p>
         </div>
 

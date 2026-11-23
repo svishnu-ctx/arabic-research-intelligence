@@ -78,7 +78,7 @@ export default function LabDashboardPage() {
             {models.length}
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
-            {language === 'ar' ? '4 لغوية + 2 صوتية' : '4 LLMs + 2 Speech models'}
+            {language === 'ar' ? '5 لغوية عربية + 2 صوتية' : '5 Arabic LLMs + 2 Speech models'}
           </div>
         </div>
 

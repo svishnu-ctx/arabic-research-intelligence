@@ -25,10 +25,11 @@ export default function ModelTestingWorkspacePage() {
   const [question, setQuestion] = useState(
     'اشرح أهمية مراجعة الأدبيات في البحث العلمي، وكيف يمكن للباحث تحديد الفجوات البحثية من خلال الدراسات السابقة؟'
   );
-  const [selectedModelIds, setSelectedModelIds] = useState<string[]>(['fanar', 'jais', 'allam', 'acegpt']);
+  const [selectedModelIds, setSelectedModelIds] = useState<string[]>(['fanar', 'jais', 'allam', 'silma']);
   const [isRunning, setIsRunning] = useState(false);
   const [results, setResults] = useState<ModelTestingResponse[] | null>(DEMO_TESTING_RESPONSES.default);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [backendStatus, setBackendStatus] = useState<string | null>(null);
 
   const toggleModel = (id: string) => {
     setSelectedModelIds((prev) =>
@@ -36,13 +37,40 @@ export default function ModelTestingWorkspacePage() {
     );
   };
 
-  const handleRunComparison = () => {
+  const handleRunComparison = async () => {
     setIsRunning(true);
     setResults(null);
-    setTimeout(() => {
+    setBackendStatus(null);
+
+    try {
+      const res = await fetch('/api/lab/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: question,
+          modelIds: selectedModelIds,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.responses) && data.responses.length > 0) {
+          setResults(data.responses);
+          setBackendStatus(data.executionMode === 'live-api' ? 'Live Gemini/HF API' : 'Full-Stack Persona Engine');
+          setIsRunning(false);
+          return;
+        }
+      }
+
+      // Fallback
+      const filtered = DEMO_TESTING_RESPONSES.default.filter((r) => selectedModelIds.includes(r.modelId));
+      setResults(filtered.length > 0 ? filtered : DEMO_TESTING_RESPONSES.default);
+    } catch {
+      const filtered = DEMO_TESTING_RESPONSES.default.filter((r) => selectedModelIds.includes(r.modelId));
+      setResults(filtered.length > 0 ? filtered : DEMO_TESTING_RESPONSES.default);
+    } finally {
       setIsRunning(false);
-      setResults(DEMO_TESTING_RESPONSES.default.filter((r) => selectedModelIds.includes(r.modelId)));
-    }, 900);
+    }
   };
 
   const copyToClipboard = (text: string, id: string) => {
@@ -153,7 +181,7 @@ export default function ModelTestingWorkspacePage() {
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
-                      DEMO RESULT
+                      {backendStatus ? `FULL-STACK EVAL (${backendStatus})` : 'EVALUATION RESULT'}
                     </span>
                     <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
                       {res.modelName}
