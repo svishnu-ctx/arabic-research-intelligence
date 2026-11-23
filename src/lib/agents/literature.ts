@@ -89,9 +89,23 @@ Generate a concise thematic synthesis and evidence-based research gaps as valid 
     const jsonMatch = result.content.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
-      const rawThemes = Array.isArray(parsed.themes) ? parsed.themes : [];
+      let rawThemes = Array.isArray(parsed.themes) ? parsed.themes : [];
+      
+      // If Fanar returned { thematic_synthesis: "...", research_gaps: [...] }
+      if (rawThemes.length === 0 && parsed.thematic_synthesis) {
+        rawThemes = [
+          {
+            theme: isArabic ? 'التوليف الموضوعي لأبحاث الطاقة والشبكات الذكية' : 'Thematic Literature Synthesis',
+            description: parsed.thematic_synthesis,
+            supportingPapers: params.publications.map(p => p.title),
+          }
+        ];
+      }
+
       const rawGaps = Array.isArray(parsed.verifiedGaps)
         ? parsed.verifiedGaps
+        : Array.isArray(parsed.research_gaps)
+        ? parsed.research_gaps
         : Array.isArray(parsed.researchGaps)
         ? parsed.researchGaps
         : [];
