@@ -241,10 +241,14 @@ export default function MethodologyAgentPage() {
                   {isArabic ? 'التصميم المنهجي المقترح' : 'Suggested Research Design'}
                 </span>
                 <h3 className="mt-1 text-base font-bold text-slate-900 dark:text-white">
-                  {methodologyAdvice.researchDesign || (methodologyAdvice as any).suggestedDesign}
+                  {typeof (methodologyAdvice.researchDesign || (methodologyAdvice as any).suggestedDesign) === 'object'
+                    ? Object.values((methodologyAdvice.researchDesign || (methodologyAdvice as any).suggestedDesign) as any).join(' - ')
+                    : String(methodologyAdvice.researchDesign || (methodologyAdvice as any).suggestedDesign || '')}
                 </h3>
                 <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {methodologyAdvice.justification}
+                  {typeof methodologyAdvice.justification === 'object'
+                    ? Object.values(methodologyAdvice.justification as any).join('. ')
+                    : String(methodologyAdvice.justification || '')}
                 </p>
               </div>
 
@@ -253,7 +257,9 @@ export default function MethodologyAgentPage() {
                   {isArabic ? 'خطة جمع البيانات وأسلوب العينات' : 'Data Collection & Sampling Strategy'}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {methodologyAdvice.samplingStrategy || (methodologyAdvice as any).dataCollectionApproach || (methodologyAdvice as any).dataCollection}
+                  {typeof (methodologyAdvice.samplingStrategy || (methodologyAdvice as any).dataCollectionApproach || (methodologyAdvice as any).dataCollection) === 'object'
+                    ? Object.entries((methodologyAdvice.samplingStrategy || (methodologyAdvice as any).dataCollectionApproach || (methodologyAdvice as any).dataCollection) as any).map(([k, v]) => `${k}: ${v}`).join('. ')
+                    : String(methodologyAdvice.samplingStrategy || (methodologyAdvice as any).dataCollectionApproach || (methodologyAdvice as any).dataCollection || '')}
                 </p>
               </div>
 

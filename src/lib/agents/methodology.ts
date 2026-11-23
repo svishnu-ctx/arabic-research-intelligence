@@ -64,29 +64,41 @@ Formulate a rigorous, fully tailored methodology plan for this research project 
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
 
-      const design = parsed.researchDesign || parsed.suggestedDesign || (
-        isArabic
+      const rawDesign = parsed.researchDesign || parsed.suggestedDesign;
+      const design = typeof rawDesign === 'string'
+        ? rawDesign
+        : typeof rawDesign === 'object' && rawDesign !== null
+        ? Object.values(rawDesign).join(' - ')
+        : (isArabic
           ? `تصميم بحثي ${params.researchType === 'Quantitative' ? 'تجريبي ووصفي كمي' : params.researchType === 'Qualitative' ? 'نوعي استكشافي' : 'مختلط متزامن'}`
-          : `${params.researchType} Empirical & Analytical Research Design`
-      );
+          : `${params.researchType} Empirical & Analytical Research Design`);
 
-      const justification = parsed.justification || (
-        isArabic
+      const rawJust = parsed.justification;
+      const justification = typeof rawJust === 'string'
+        ? rawJust
+        : typeof rawJust === 'object' && rawJust !== null
+        ? Object.values(rawJust).join('. ')
+        : (isArabic
           ? `يتيح هذا التصميم اختبار الفرضيات الميدانية ونمذجة المتغيرات بدقة علمية وفق معايير جامعة الشارقة.`
-          : `This design provides the necessary empirical rigor to model dynamics and test performance hypotheses robustly.`
-      );
+          : `This design provides the necessary empirical rigor to model dynamics and test performance hypotheses robustly.`);
 
-      const dataColl = parsed.dataCollectionApproach || parsed.dataCollection || (
-        isArabic
+      const rawDataColl = parsed.dataCollectionApproach || parsed.dataCollection;
+      const dataColl = typeof rawDataColl === 'string'
+        ? rawDataColl
+        : typeof rawDataColl === 'object' && rawDataColl !== null
+        ? Object.values(rawDataColl).join('. ')
+        : (isArabic
           ? 'جمع البيانات الميدانية والمحاكاة التجريبية عبر قياسات رقمية واستبانات محكمة.'
-          : 'High-frequency telemetry logging, empirical field data acquisition, and structured observation.'
-      );
+          : 'High-frequency telemetry logging, empirical field data acquisition, and structured observation.');
 
-      const sampling = parsed.samplingStrategy || (
-        isArabic
+      const rawSampling = parsed.samplingStrategy;
+      const sampling = typeof rawSampling === 'string'
+        ? rawSampling
+        : typeof rawSampling === 'object' && rawSampling !== null
+        ? Object.entries(rawSampling).map(([k, v]) => `${k.replace(/([A-Z])/g, ' $1')}: ${v}`).join('. ')
+        : (isArabic
           ? 'عينة احتمالية طبقية تمثل النطاق التطبيقي مع تحديد هامش خطأ لا يتجاوز 5% ومستوى ثقة 95%.'
-          : 'Stratified sampling across target microgrid nodes with a 95% confidence interval and 5% margin of error.'
-      );
+          : 'Stratified sampling across target microgrid nodes with a 95% confidence interval and 5% margin of error.');
 
       const rawPlan = parsed.dataAnalysisPlan || parsed.analysisPlan || [];
       const analysisPlan = Array.isArray(rawPlan)
