@@ -72,6 +72,7 @@ export default function ThesisAgentPage() {
           chapterTitle,
           chapterType,
           content: chapterText,
+          chapterContent: chapterText,
           academicLevel: 'MASTERS',
           language: isArabic ? 'ar' : 'en',
         }),

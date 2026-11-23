@@ -79,6 +79,7 @@ export default function MethodologyAgentPage() {
           researchType,
           objectives: researchObjectives.split('\n').filter(Boolean),
           academicLevel: 'MASTERS',
+          level: 'Masters',
           language: isArabic ? 'ar' : 'en',
         }),
       });

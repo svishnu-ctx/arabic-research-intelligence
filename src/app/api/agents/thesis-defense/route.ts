@@ -1,22 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateDefenseQuestions } from '@/lib/agents/thesis';
-import { ServerStorage } from '@/lib/server/storage';
+import { ServerStorage, StoredProject } from '@/lib/server/storage';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { projectId, thesisTitle, methodologySummary, academicLevel } = body;
 
-    let project = projectId ? ServerStorage.getProject(projectId) : ServerStorage.listProjects()[0];
+    let project: StoredProject | null | undefined = projectId
+      ? ServerStorage.getProject(projectId)
+      : ServerStorage.listProjects()[0];
+
     if (!project) {
       project = {
         id: 'proj_default',
         studentId: 'usr_student',
         title: thesisTitle || 'Optimizing Renewable Energy Microgrids in Sharjah',
         researchField: 'Computer Science & Sustainable Engineering',
-        academicLevel: academicLevel || 'Master’s Thesis',
+        academicLevel: 'Masters',
         description: methodologySummary || 'Academic research methodology and AI modeling',
-        status: 'ACTIVE',
+        completionProgress: 50,
+        publications: [],
+        datasets: [],
+        chapters: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };

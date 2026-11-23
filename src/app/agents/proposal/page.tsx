@@ -73,8 +73,10 @@ export default function ProposalAgentPage() {
         body: JSON.stringify({
           field,
           academicLevel,
+          level: academicLevel,
           interests: researchInterests,
           initialIdea,
+          idea: initialIdea,
           language: targetLanguage,
         }),
       });

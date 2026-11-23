@@ -91,18 +91,21 @@ export default function LiteratureAgentPage() {
     setReviewResult(null);
 
     try {
+      const formattedPapers = selectedPapers.map((p) => ({
+        title: p.title,
+        authors: Array.isArray(p.authors) ? p.authors.join(', ') : String(p.authors || 'Academic Researchers'),
+        year: p.year || 2024,
+        doi: p.doi,
+        abstract: p.abstract || '',
+      }));
+
       const res = await fetch('/api/agents/literature-review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           topic: query,
-          papers: selectedPapers.map((p) => ({
-            title: p.title,
-            authors: Array.isArray(p.authors) ? p.authors.join(', ') : String(p.authors || 'Academic Researchers'),
-            year: p.year || 2024,
-            doi: p.doi,
-            abstract: p.abstract || '',
-          })),
+          papers: formattedPapers,
+          publications: formattedPapers,
           language: isArabic ? 'ar' : 'en',
         }),
       });
