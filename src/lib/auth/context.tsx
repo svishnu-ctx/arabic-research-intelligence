@@ -66,22 +66,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refreshSession();
   }, [refreshSession]);
 
-  const login = async (username: string = 'researcher', password?: string) => {
+  const login = async (username: string = 'student@sharjah.ac.ae', password?: string) => {
     setIsLoading(true);
 
-    const cleanUsername = username.trim() || 'researcher';
-    const displayName = cleanUsername === 'researcher' || cleanUsername === 'scholar_demo'
+    const cleanUsername = username.trim() || 'student@sharjah.ac.ae';
+    const isMockStudent =
+      cleanUsername.toLowerCase() === 'student@sharjah.ac.ae' ||
+      cleanUsername.toLowerCase() === 'student' ||
+      cleanUsername === 'student_demo';
+
+    const displayName = isMockStudent
+      ? 'Maryam Al-Sharqi (مريم الشارقي)'
+      : cleanUsername === 'researcher' || cleanUsername === 'scholar_demo'
       ? 'د. باحث أكاديمي / Academic Researcher'
       : cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1);
 
     const mockUser: User = {
-      id: `usr_${Date.now()}`,
+      id: isMockStudent ? 'usr_student_01' : `usr_${Date.now()}`,
       username: cleanUsername,
-      role: 'admin', // Full universal access to all research and evaluation modules
+      role: 'student',
       displayName,
-      email: `${cleanUsername.toLowerCase().replace(/\s+/g, '_')}@sharjah.ac.ae`,
+      email: isMockStudent ? 'student@sharjah.ac.ae' : `${cleanUsername.toLowerCase().replace(/\s+/g, '_')}@sharjah.ac.ae`,
     };
 
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: cleanUsername,
+          password: password || 'Student@123',
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user));
+          }
+          setUser(data.user);
+          setCsrfToken(data.csrfToken || 'mock-csrf-token-2026');
+          setIsLoading(false);
+          return { success: true };
+        }
+      }
+    } catch {
+      // Continue to mock fallback
+    }
+
+    // Mock fallback when offline or in development
     if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(mockUser));
     }

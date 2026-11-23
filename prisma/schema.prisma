@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id              String            @id @default(uuid())
+  studentId       String            @unique
+  email           String            @unique
+  fullName        String
+  fullNameAr      String
+  academicLevel   String            // undergraduate, masters, phd
+  department      String
+  college         String
+  passwordHash    String
+  salt            String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  sessions        Session[]
+  projects        ResearchProject[]
+  auditLogs       AuditLog[]
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  studentId    String
+  student      Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  tokenHash    String    @unique
+  expiresAt    DateTime
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime  @default(now())
+}
+
+model ResearchProject {
+  id                  String               @id @default(uuid())
+  studentId           String
+  student             Student              @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title               String
+  titleAr             String?
+  researchField       String
+  academicLevel       String               // undergraduate, masters, phd
+  description         String?
+  completionProgress  Int                  @default(10)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  objectives          ResearchObjective[]
+  questions           ResearchQuestion[]
+  proposal            ResearchProposal?
+  documents           ResearchDocument[]
+  projectPublications ProjectPublication[]
+  methodology         ResearchMethodology?
+  datasets            Dataset[]
+  chapters            ThesisChapter[]
+  conversations       Conversation[]
+  aiUsageLogs         AIUsageLog[]
+}
+
+model ResearchObjective {
+  id          String          @id @default(uuid())
+  projectId   String
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  objective   String
+  isPrimary   Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+}
+
+model ResearchQuestion {
+  id          String          @id @default(uuid())
+  projectId   String
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  question    String
+  hypothesis  String?
+  createdAt   DateTime        @default(now())
+}
+
+model ResearchProposal {
+  id                  String          @id @default(uuid())
+  projectId           String          @unique
+  project             ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title               String
+  background          String
+  problemStatement    String
+  scopeAndLimitations String
+  expectedContribution String
+  suggestedNextSteps  String?
+  version             Int             @default(1)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+}
+
+model ResearchDocument {
+  id          String          @id @default(uuid())
+  projectId   String
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  filename    String
+  fileType    String          // pdf, docx, txt, csv, xlsx
+  fileSize    Int
+  storagePath String
+  extractedText String?
+  pageCount   Int?
+  uploadedAt  DateTime        @default(now())
+}
+
+model ResearchPublication {
+  id             String               @id @default(uuid())
+  title          String
+  authors        String
+  publicationYear Int?
+  venue          String?
+  doi            String?              @unique
+  abstract       String?
+  sourceDatabase String               // openalex, crossref, semanticscholar
+  publicationUrl String?
+  projects       ProjectPublication[]
+  createdAt      DateTime             @default(now())
+}
+
+model ProjectPublication {
+  id            String              @id @default(uuid())
+  projectId     String
+  project       ResearchProject     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  publicationId String
+  publication   ResearchPublication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  notes         String?
+  relevance     String?
+  savedAt       DateTime            @default(now())
+
+  @@unique([projectId, publicationId])
+}
+
+model ResearchMethodology {
+  id                 String          @id @default(uuid())
+  projectId          String          @unique
+  project            ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  researchType       String          // quantitative, qualitative, mixed
+  suggestedDesign    String
+  justification      String
+  dataCollection     String
+  samplingStrategy   String
+  instruments        String
+  analysisPlan       String
+  limitations        String
+  ethicalConsiderations String
+  updatedAt          DateTime        @updatedAt
+}
+
+model Dataset {
+  id          String            @id @default(uuid())
+  projectId   String
+  project     ResearchProject   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  filename    String
+  rowCount    Int
+  columnCount Int
+  fileSize    Int
+  storagePath String
+  uploadedAt  DateTime          @default(now())
+  analyses    DatasetAnalysis[]
+}
+
+model DatasetAnalysis {
+  id          String          @id @default(uuid())
+  datasetId   String
+  dataset     Dataset         @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  summaryJson String          // Columns, missing values, descriptive stats
+  aiInterpretation String?    // Fanar interpretation
+  createdAt   DateTime        @default(now())
+}
+
+model ThesisChapter {
+  id          String          @id @default(uuid())
+  projectId   String
+  project     ResearchProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  chapterNumber Int
+  title       String
+  content     String
+  wordCount   Int             @default(0)
+  updatedAt   DateTime        @updatedAt
+  versions    ThesisVersion[]
+}
+
+model ThesisVersion {
+  id          String        @id @default(uuid())
+  chapterId   String
+  chapter     ThesisChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  content     String
+  feedback    String?
+  createdAt   DateTime      @default(now())
+}
+
+model Agent {
+  id          String               @id // proposal, literature, methodology, thesis
+  name        String
+  description String
+  prompts     AgentPromptVersion[]
+}
+
+model AgentPromptVersion {
+  id          String   @id @default(uuid())
+  agentId     String
+  agent       Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  version     Int
+  systemPrompt String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Conversation {
+  id          String                @id @default(uuid())
+  projectId   String
+  project     ResearchProject       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  agentId     String
+  title       String
+  createdAt   DateTime              @default(now())
+  messages    ConversationMessage[]
+}
+
+model ConversationMessage {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // user, assistant, system
+  content        String
+  tokenCount     Int?
+  latencyMs      Int?
+  createdAt      DateTime     @default(now())
+}
+
+model AIRequest {
+  id          String    @id @default(uuid())
+  studentId   String
+  projectId   String?
+  agentId     String
+  promptText  String
+  createdAt   DateTime  @default(now())
+}
+
+model AIUsageLog {
+  id          String          @id @default(uuid())
+  projectId   String?
+  project     ResearchProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  provider    String          @default("Fanar")
+  model       String          @default("Fanar")
+  agentId     String
+  promptTokens Int            @default(0)
+  completionTokens Int        @default(0)
+  totalTokens Int             @default(0)
+  latencyMs   Int
+  success     Boolean
+  errorMessage String?
+  createdAt   DateTime        @default(now())
+}
+
+model AuditLog {
+  id          String    @id @default(uuid())
+  studentId   String?
+  student     Student?  @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  action      String
+  details     String?
+  ipAddress   String?
+  timestamp   DateTime  @default(now())
+}

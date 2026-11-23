@@ -71,6 +71,30 @@ export interface DemoAccountConfig {
 }
 
 export const DEMO_ACCOUNTS: Record<string, DemoAccountConfig> = {
+  'student@sharjah.ac.ae': {
+    username: 'student@sharjah.ac.ae',
+    role: 'student',
+    displayName: 'Maryam Al-Sharqi (مريم الشارقي)',
+    email: 'student@sharjah.ac.ae',
+    saltEnvVar: 'DEMO_SALT_STUDENT',
+    hashEnvVar: 'DEMO_HASH_STUDENT',
+  },
+  student: {
+    username: 'student',
+    role: 'student',
+    displayName: 'Maryam Al-Sharqi (مريم الشارقي)',
+    email: 'student@sharjah.ac.ae',
+    saltEnvVar: 'DEMO_SALT_STUDENT',
+    hashEnvVar: 'DEMO_HASH_STUDENT',
+  },
+  student_demo: {
+    username: 'student_demo',
+    role: 'student',
+    displayName: 'Maryam Al-Sharqi (مريم الشارقي)',
+    email: 'student@sharjah.ac.ae',
+    saltEnvVar: 'DEMO_SALT_STUDENT',
+    hashEnvVar: 'DEMO_HASH_STUDENT',
+  },
   admin_demo: {
     username: 'admin_demo',
     role: 'admin',
@@ -94,13 +118,5 @@ export const DEMO_ACCOUNTS: Record<string, DemoAccountConfig> = {
     email: 'o.mansoor@sharjah.ac.ae',
     saltEnvVar: 'DEMO_SALT_SCHOLAR',
     hashEnvVar: 'DEMO_HASH_SCHOLAR',
-  },
-  student_demo: {
-    username: 'student_demo',
-    role: 'student',
-    displayName: 'Mariam Al-Qasimi (M.Sc. Student)',
-    email: 'm.qasimi@sharjah.ac.ae',
-    saltEnvVar: 'DEMO_SALT_STUDENT',
-    hashEnvVar: 'DEMO_HASH_STUDENT',
   },
 };
