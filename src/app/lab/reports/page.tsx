@@ -24,29 +24,44 @@ export default function EvaluationReportsPage() {
     window.print();
   };
 
-  const handleDownloadCSV = () => {
-    const headers = ['Model', 'Developer', 'Country', 'Category', 'OverallScore', 'ArabicFluency', 'AcademicWriting', 'LatencyMs'];
-    const rows = models.map(m => [
-      `"${m.name}"`,
-      `"${m.developer}"`,
-      `"${m.country}"`,
-      `"${m.category}"`,
-      m.overallScore,
-      m.arabicFluency,
-      m.academicWriting,
-      m.latencyMs
-    ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'arabic_ai_evaluation_report_demo.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownloadCSV = async () => {
+    try {
+      const res = await fetch('/api/lab/reports');
+      let csvContent = '';
+      if (res.ok) {
+        const data = await res.json();
+        if (data.csvContent) {
+          csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent(data.csvContent);
+        }
+      }
 
-    setDownloadNotice(true);
-    setTimeout(() => setDownloadNotice(false), 3000);
+      if (!csvContent) {
+        const headers = ['Model', 'Developer', 'Country', 'Category', 'OverallScore', 'ArabicFluency', 'AcademicWriting', 'LatencyMs'];
+        const rows = models.map(m => [
+          `"${m.name}"`,
+          `"${m.developer}"`,
+          `"${m.country}"`,
+          `"${m.category}"`,
+          m.overallScore,
+          m.arabicFluency,
+          m.academicWriting,
+          m.latencyMs
+        ]);
+        csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent([headers.join(','), ...rows.map(e => e.join(','))].join('\n'));
+      }
+
+      const link = document.createElement('a');
+      link.setAttribute('href', csvContent);
+      link.setAttribute('download', 'arabic_ai_evaluation_report.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setDownloadNotice(true);
+      setTimeout(() => setDownloadNotice(false), 3000);
+    } catch {
+      // Fallback
+    }
   };
 
   return (

@@ -53,26 +53,38 @@ export default function BenchmarkLibraryPage() {
     return b.category === selectedCategory;
   });
 
-  const handleAddBenchmarkSubmit = (e: React.FormEvent) => {
+  const handleAddBenchmarkSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    addNewBenchmark({
+    const benchmarkPayload = {
       title: newTitle,
       titleAr: newTitle,
       category: newCategory,
       categoryAr: newCategory,
-      language: 'Arabic',
+      language: 'Arabic' as const,
       difficulty: newDifficulty,
       difficultyAr: newDifficulty === 'Advanced' ? 'متقدم' : 'متوسط',
       expectedCriteria: 'Accuracy, linguistic rigor, and academic terminology.',
       expectedCriteriaAr: 'الدقة اللغوية ومراعاة المصطلحات الأكاديمية.',
       modelsTestedCount: 4,
       lastUpdated: new Date().toISOString().split('T')[0],
-      status: 'Active',
+      status: 'Active' as const,
       prompt: newPrompt || 'سؤال أكاديمي تجريبي...',
       referenceAnswer: newReference || 'إجابة مرجعية معتمدة من الخبير اللغوي...'
-    });
+    };
+
+    addNewBenchmark(benchmarkPayload);
+
+    try {
+      await fetch('/api/lab/benchmarks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(benchmarkPayload),
+      });
+    } catch {
+      // Local fallback in addNewBenchmark
+    }
 
     setNewTitle('');
     setNewPrompt('');

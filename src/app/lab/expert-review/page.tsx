@@ -38,9 +38,10 @@ export default function ExpertReviewPage() {
 
   const currentBenchmark = benchmarks[currentBenchIndex] || benchmarks[0];
 
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    addReview({
+
+    const reviewData = {
       benchmarkId: currentBenchmark.id,
       modelId: 'fanar',
       grammarScore: grammar,
@@ -53,7 +54,19 @@ export default function ExpertReviewPage() {
       decision,
       comments: comments || (language === 'ar' ? 'مراجعة خبير معتمدة.' : 'Verified expert evaluation.'),
       reviewerName: language === 'ar' ? 'د. فاطمة الزهراء (محكم لغوي معتمد)' : 'Dr. Fatima Al-Zahra (Certified Arabic Linguistic Reviewer)'
-    });
+    };
+
+    addReview(reviewData);
+
+    try {
+      await fetch('/api/lab/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewData),
+      });
+    } catch {
+      // Local fallback in addReview
+    }
 
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);

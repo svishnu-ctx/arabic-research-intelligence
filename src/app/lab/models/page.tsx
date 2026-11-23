@@ -46,19 +46,19 @@ export default function ModelRegistryPage() {
     return true;
   });
 
-  const handleAddModelSubmit = (e: React.FormEvent) => {
+  const handleAddModelSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newName.trim()) return;
 
-    addNewModel({
+    const modelPayload = {
       name: newName,
       developer: newDeveloper || 'Academic Contributor',
       country: newCountry || 'UAE / Global',
       category: newCategory,
-      languageFocus: 'arabic-first',
+      languageFocus: 'arabic-first' as const,
       capabilities: ['Arabic processing', 'Demonstration entry'],
       capabilitiesAr: ['معالجة اللغة العربية', 'نموذج تجريبي'],
-      evaluationStatus: 'not-evaluated',
+      evaluationStatus: 'not-evaluated' as const,
       lastTestedDate: new Date().toISOString().split('T')[0],
       version: 'v1.0 (Demo)',
       parameters: '7 Billion',
@@ -70,7 +70,19 @@ export default function ModelRegistryPage() {
       latencyMs: 390,
       estimatedCostPer1kTokens: '$0.0010',
       licenseStatus: 'Academic Evaluation Only'
-    });
+    };
+
+    addNewModel(modelPayload);
+
+    try {
+      await fetch('/api/lab/models', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(modelPayload),
+      });
+    } catch {
+      // Local fallback in addNewModel
+    }
 
     setNewName('');
     setNewDeveloper('');

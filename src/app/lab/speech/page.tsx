@@ -21,29 +21,77 @@ export default function SpeechEvaluationPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTask, setActiveTask] = useState<'asr' | 'translation' | 'tts'>('asr');
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [speechModels, setSpeechModels] = useState(DEMO_SPEECH_SCENARIO.models);
+  const [backendStatus, setBackendStatus] = useState<string | null>(null);
 
   const scenario = DEMO_SPEECH_SCENARIO;
 
-  const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setUploadedFileName(file.name);
+      await runSpeechEvaluation();
+    }
+  };
+
+  const runSpeechEvaluation = async () => {
+    setIsEvaluating(true);
+    setBackendStatus(null);
+    try {
+      const res = await fetch('/api/lab/speech/transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reference: scenario.referenceTranscript,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.models) {
+          setSpeechModels(data.models);
+          setBackendStatus(language === 'ar' ? 'تم استدعاء واجهة التفريغ الصوتي (Live API)' : 'Live Speech Backend API Executed');
+        }
+      }
+    } catch {
+      // Keep existing models
+    } finally {
+      setIsEvaluating(false);
     }
   };
 
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-          <Mic className="h-6 w-6 text-indigo-600" />
-          <span>{t.labNav.speech}</span>
-        </h1>
-        <p className="mt-1 text-xs text-slate-500">
-          {language === 'ar'
-            ? 'تقييم ومقارنة تقنيات التعرف الصوتي (ASR) والترجمة الفورية للمحاضرات الجامعية والمقابلات'
-            : 'Comparative evaluation of Arabic speech recognition, translation & synthesis technologies'}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
+            <Mic className="h-6 w-6 text-indigo-600" />
+            <span>{t.labNav.speech}</span>
+          </h1>
+          <p className="mt-1 text-xs text-slate-500">
+            {language === 'ar'
+              ? 'تقييم ومقارنة تقنيات التعرف الصوتي (ASR) والترجمة الفورية للمحاضرات الجامعية والمقابلات'
+              : 'Comparative evaluation of Arabic speech recognition, translation & synthesis technologies'}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {backendStatus && (
+            <span className="rounded-full bg-emerald-50 dark:bg-emerald-950 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+              {backendStatus}
+            </span>
+          )}
+          <button
+            onClick={runSpeechEvaluation}
+            disabled={isEvaluating}
+            className="inline-flex items-center gap-2 rounded-xl bg-indigo-700 hover:bg-indigo-800 px-4 py-2.5 text-xs font-bold text-white shadow-sm disabled:opacity-50 transition"
+          >
+            <Sparkles className="h-4 w-4" />
+            <span>{isEvaluating ? t.common.loading : (language === 'ar' ? 'تشغيل تقييم التفريغ الصوتي (API)' : 'Run Speech Evaluation (API)')}</span>
+          </button>
+        </div>
       </div>
 
       {/* Audio Scenario & Upload Workspace */}
@@ -147,7 +195,7 @@ export default function SpeechEvaluationPage() {
 
       {/* Side-by-Side Model Transcriptions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {scenario.models.map((model) => (
+        {speechModels.map((model) => (
           <div
             key={model.modelId}
             className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm space-y-4"
