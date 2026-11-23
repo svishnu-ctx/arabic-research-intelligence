@@ -32,8 +32,15 @@ export async function POST(req: NextRequest) {
       project.title = thesisTitle;
     }
 
-    const questions = await generateDefenseQuestions(project);
-    ServerStorage.setDefenseQuestions(project.id, questions);
+    const language = body.language || 'en';
+
+    const questions = await generateDefenseQuestions({
+      thesisTitle: thesisTitle || project.title,
+      methodologySummary: methodologySummary || project.description,
+      academicLevel: academicLevel || project.academicLevel,
+      language: language === 'ar' ? 'ar' : 'en',
+    });
+    ServerStorage.setDefenseQuestions(project.id, questions.map(q => typeof q === 'string' ? q : q.question));
 
     return NextResponse.json({
       success: true,

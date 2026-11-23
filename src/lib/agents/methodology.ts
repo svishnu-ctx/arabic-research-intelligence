@@ -42,6 +42,7 @@ Topic: ${params.topic}
 Research Type: ${params.researchType}
 Academic Level: ${params.level}
 Research Objectives: ${params.objectives?.join(' | ') || 'Evaluate technical performance and impact'}
+${isArabic ? 'STRICT LANGUAGE DIRECTIVE: You MUST generate all methodology components, design, justification, sampling, and analysis steps strictly in formal Modern Standard Arabic (العربية الفصحى المعاصرة). Do NOT output English.' : 'STRICT LANGUAGE DIRECTIVE: You MUST generate all methodology components, design, justification, sampling, and analysis steps strictly in formal Academic English. Do NOT output Arabic.'}
 Language: ${isArabic ? 'Modern Standard Arabic (العربية الفصحى الأكاديمية)' : 'Academic English'}
 
 Formulate a rigorous, fully tailored methodology plan for this research project as valid JSON.

@@ -33,11 +33,13 @@ export async function generateResearchProposal(params: {
   language?: 'ar' | 'en';
 }): Promise<StoredProposal> {
   const userPrompt = `
+${params.language === 'en' ? 'STRICT LANGUAGE DIRECTIVE: You MUST generate all JSON string values, titles, objectives, questions, hypotheses, and text strictly in Academic English only. Do NOT output Arabic.' : 'تعليمات لغوية صارمة: يجب توليد جميع حقول JSON، العناوين، الأهداف، الأسئلة، والفرضيات باللغة العربية الفصحى الأكاديمية المعاصرة فقط. لا تستخدم الإنجليزية.'}
+
 مجال البحث: ${params.field}
 المستوى الأكاديمي للطالب: ${params.level}
 الاهتمامات البحثية: ${params.interests}
 الفكرة الأولية للطالب: ${params.idea}
-لغة المخرجات المفضلة: ${params.language === 'en' ? 'الإنجليزية الأكاديمية' : 'العربية الفصحى المعاصرة'}
+لغة المخرجات المطلوبة: ${params.language === 'en' ? 'Academic English' : 'العربية الفصحى المعاصرة'}
 
 قم بتوليد مقترح بحثي متكامل مستوفٍ لجميع الحقول بصيغة JSON.
 `;

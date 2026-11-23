@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
     const projectId = body.projectId;
     const chapterId = body.chapterId;
     const projectContext = body.projectContext;
+    const language = body.language || 'en';
 
     if (!chapterTitle || !chapterContent) {
       return NextResponse.json(
@@ -24,6 +25,7 @@ export async function POST(req: NextRequest) {
       chapterTitle,
       chapterContent,
       projectContext,
+      language: language === 'ar' ? 'ar' : 'en',
     });
 
     if (projectId && chapterId) {

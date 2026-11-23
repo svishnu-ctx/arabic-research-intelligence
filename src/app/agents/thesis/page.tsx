@@ -246,7 +246,7 @@ export default function ThesisAgentPage() {
                     {isArabic ? 'التقييم الأكاديمي الإجمالي' : 'Overall Academic Critique'}
                   </span>
                   <p className="mt-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
-                    {reviewResult.overallAssessment}
+                    {reviewResult.overallAssessment || (reviewResult as any).critique}
                   </p>
                 </div>
 
@@ -256,7 +256,7 @@ export default function ThesisAgentPage() {
                       {isArabic ? 'النبرة العلمية' : 'Academic Tone'}
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                      {reviewResult.academicTone}
+                      {reviewResult.academicTone || (isArabic ? 'نبرة علمية متزنة ورصينة' : 'Formal scholarly tone')}
                     </p>
                   </div>
 
@@ -265,7 +265,7 @@ export default function ThesisAgentPage() {
                       {isArabic ? 'الترابط والتدفق المنطقي' : 'Coherence & Flow'}
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                      {reviewResult.coherenceAndFlow}
+                      {reviewResult.coherenceAndFlow || (isArabic ? 'تسلسل منطقي بين الفرضيات والنتائج' : 'Clear logical flow between sections')}
                     </p>
                   </div>
                 </div>
@@ -276,7 +276,12 @@ export default function ThesisAgentPage() {
                     <span>{isArabic ? 'توصيات التعديل الإجرائية' : 'Actionable Revision Recommendations'}</span>
                   </h4>
                   <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                    {(Array.isArray(reviewResult.actionableRevisions) ? reviewResult.actionableRevisions : []).map((rev, i) => (
+                    {((Array.isArray(reviewResult.actionableRevisions)
+                      ? reviewResult.actionableRevisions
+                      : Array.isArray((reviewResult as any).suggestions)
+                      ? (reviewResult as any).suggestions
+                      : [(reviewResult.actionableRevisions || (reviewResult as any).suggestions)].filter(Boolean)
+                    ) as string[]).map((rev, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-emerald-600 font-bold">•</span>
                         <span>{rev}</span>
@@ -344,34 +349,42 @@ export default function ThesisAgentPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {defenseQuestions.map((q, i) => (
+                {defenseQuestions.map((q: any, i) => (
                   <div
                     key={i}
                     className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm space-y-3"
                   >
                     <div className="flex items-center justify-between">
                       <span className="rounded-full bg-amber-100 dark:bg-amber-950 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 dark:text-amber-300">
-                        {q.category}
+                        {typeof q === 'object' ? (q.category || 'METHODOLOGY') : 'METHODOLOGY'}
                       </span>
                       <span className="text-[10px] font-mono text-slate-400">Q{i + 1}</span>
                     </div>
 
                     <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                      "{q.question}"
+                      "{typeof q === 'object' ? (q.question || String(q)) : String(q)}"
                     </h4>
 
                     <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-xs text-slate-600 dark:text-slate-400">
                       <div className="font-semibold text-slate-800 dark:text-slate-200 mb-1">
                         {isArabic ? 'هدف الممتحن من السؤال:' : 'Examiner Intent:'}
                       </div>
-                      <div>{q.examinerIntent}</div>
+                      <div>
+                        {typeof q === 'object' && q.examinerIntent
+                          ? q.examinerIntent
+                          : (isArabic ? 'فحص الرصانة المنهجية وقابلية تعميم النتائج.' : 'Testing methodological rigor and generalizability.')}
+                      </div>
                     </div>
 
                     <div className="p-3 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 text-xs text-emerald-900 dark:text-emerald-300">
                       <div className="font-bold text-emerald-800 dark:text-emerald-200 mb-1">
                         {isArabic ? 'استراتيجية الإجابة المقترحة للطالب:' : 'Suggested Defense Argument:'}
                       </div>
-                      <div>{q.suggestedDefense}</div>
+                      <div>
+                        {typeof q === 'object' && q.suggestedDefense
+                          ? q.suggestedDefense
+                          : (isArabic ? 'بيّن المعايير التجريبية والأدلة الإحصائية التي تدعم قرارك.' : 'Cite your empirical validation data and comparative benchmarks.')}
+                      </div>
                     </div>
                   </div>
                 ))}

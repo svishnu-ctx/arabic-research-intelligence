@@ -65,6 +65,7 @@ export async function generateLiteratureSynthesis(params: {
 
   const userPrompt = `
 Topic: ${params.topic}
+${isArabic ? 'STRICT LANGUAGE DIRECTIVE: You MUST generate all themes, descriptions, and verified research gaps strictly in formal Modern Standard Arabic (العربية الفصحى الأكاديمية المعاصرة). Do NOT output English.' : 'STRICT LANGUAGE DIRECTIVE: You MUST generate all themes, descriptions, and verified research gaps strictly in formal Academic English. Do NOT output Arabic.'}
 Language: ${isArabic ? 'Modern Standard Arabic (العربية الفصحى الأكاديمية)' : 'Academic English'}
 
 Real Retrieved Academic Papers:
