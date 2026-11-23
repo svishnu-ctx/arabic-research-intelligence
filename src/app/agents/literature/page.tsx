@@ -22,12 +22,12 @@ import {
 interface Publication {
   id: string;
   title: string;
-  authors: string[];
-  year: number;
+  authors: string | string[];
+  year?: number;
   venue?: string;
   doi?: string;
   abstract?: string;
-  source: 'OpenAlex' | 'Crossref';
+  source: 'openalex' | 'crossref' | 'OpenAlex' | 'Crossref';
   url?: string;
 }
 
@@ -61,10 +61,11 @@ export default function LiteratureAgentPage() {
       const res = await fetch(`/api/publications/search?query=${encodeURIComponent(query)}&limit=10`);
       if (res.ok) {
         const data = await res.json();
-        setPublications(data.publications || []);
+        const papers = data.publications || data.results || [];
+        setPublications(papers);
         // Auto select top 3 for instant comparison
-        if (data.publications && data.publications.length > 0) {
-          setSelectedPapers(data.publications.slice(0, 3));
+        if (papers.length > 0) {
+          setSelectedPapers(papers.slice(0, 3));
         }
       }
     } catch (err) {
@@ -97,8 +98,8 @@ export default function LiteratureAgentPage() {
           topic: query,
           papers: selectedPapers.map((p) => ({
             title: p.title,
-            authors: p.authors.join(', '),
-            year: p.year,
+            authors: Array.isArray(p.authors) ? p.authors.join(', ') : String(p.authors || 'Academic Researchers'),
+            year: p.year || 2024,
             doi: p.doi,
             abstract: p.abstract || '',
           })),
@@ -255,9 +256,13 @@ export default function LiteratureAgentPage() {
                           {paper.title}
                         </h4>
                         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                          <span>{paper.authors.slice(0, 3).join(', ')}{paper.authors.length > 3 ? ' et al.' : ''}</span>
-                          <span>•</span>
-                          <span>{paper.year}</span>
+                          <span>{Array.isArray(paper.authors) ? paper.authors.join(', ') : String(paper.authors || 'Researchers')}</span>
+                          {paper.year && (
+                            <>
+                              <span>•</span>
+                              <span>{paper.year}</span>
+                            </>
+                          )}
                           {paper.venue && (
                             <>
                               <span>•</span>

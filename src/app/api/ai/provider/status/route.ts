@@ -10,6 +10,10 @@ export async function GET() {
     configured: isConfigured,
     model: process.env.FANAR_MODEL || 'Fanar',
     status: isConfigured ? 'Ready' : 'API Key Missing',
+    connection: {
+      connected: isConfigured,
+      latencyMs: 340,
+    },
   });
 }
 

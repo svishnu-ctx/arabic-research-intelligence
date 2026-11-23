@@ -3,7 +3,17 @@
  * Endpoint: https://api.crossref.org/works
  */
 
-import { AcademicPaperResult } from './openalex';
+export interface AcademicPaperResult {
+  id: string;
+  title: string;
+  authors: string;
+  year?: number;
+  venue?: string;
+  doi?: string;
+  abstract?: string;
+  url?: string;
+  source: 'openalex' | 'crossref';
+}
 
 export async function searchCrossref(query: string, limit: number = 6): Promise<AcademicPaperResult[]> {
   try {

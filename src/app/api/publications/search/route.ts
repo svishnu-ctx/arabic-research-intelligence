@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
       query,
       count: results.length,
       results,
+      publications: results,
     });
   } catch (error) {
     return NextResponse.json(
