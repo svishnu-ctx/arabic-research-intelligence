@@ -55,6 +55,11 @@ export default function MethodologyAgentPage() {
 
   const [isAdvising, setIsAdvising] = useState(false);
   const [methodologyAdvice, setMethodologyAdvice] = useState<MethodologyAdvice | null>(null);
+  const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
+
+  React.useEffect(() => {
+    setTargetLanguage(isArabic ? 'ar' : 'en');
+  }, [isArabic]);
 
   // Dataset upload & analysis state
   const [csvText, setCsvText] = useState(
@@ -80,7 +85,7 @@ export default function MethodologyAgentPage() {
           objectives: researchObjectives.split('\n').filter(Boolean),
           academicLevel: 'MASTERS',
           level: 'Masters',
-          language: isArabic ? 'ar' : 'en',
+          language: targetLanguage,
         }),
       });
 
@@ -112,7 +117,7 @@ export default function MethodologyAgentPage() {
           content: csvText,
           csvContent: csvText,
           researchTopic: topic,
-          language: isArabic ? 'ar' : 'en',
+          language: targetLanguage,
         }),
       });
 
@@ -211,6 +216,36 @@ export default function MethodologyAgentPage() {
                   onChange={(e) => setResearchObjectives(e.target.value)}
                   className="mt-1 block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-2.5 text-xs text-slate-900 dark:text-white focus:border-purple-600 focus:outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  {isArabic ? 'لغة المخرجات الأكاديمية' : 'Output Language'}
+                </label>
+                <div className="flex items-center gap-4 text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="methTargetLanguage"
+                      value="ar"
+                      checked={targetLanguage === 'ar'}
+                      onChange={() => setTargetLanguage('ar')}
+                      className="text-purple-700 focus:ring-purple-600"
+                    />
+                    <span>العربية (Arabic)</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="methTargetLanguage"
+                      value="en"
+                      checked={targetLanguage === 'en'}
+                      onChange={() => setTargetLanguage('en')}
+                      className="text-purple-700 focus:ring-purple-600"
+                    />
+                    <span>English</span>
+                  </label>
+                </div>
               </div>
 
               <button

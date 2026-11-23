@@ -55,6 +55,11 @@ export default function ThesisAgentPage() {
   );
   const [isSimulatingDefense, setIsSimulatingDefense] = useState(false);
   const [defenseQuestions, setDefenseQuestions] = useState<DefenseQuestion[]>([]);
+  const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
+
+  React.useEffect(() => {
+    setTargetLanguage(isArabic ? 'ar' : 'en');
+  }, [isArabic]);
 
   // Run Chapter Review with Fanar
   const handleReviewChapter = async (e: React.FormEvent) => {
@@ -74,7 +79,7 @@ export default function ThesisAgentPage() {
           content: chapterText,
           chapterContent: chapterText,
           academicLevel: 'MASTERS',
-          language: isArabic ? 'ar' : 'en',
+          language: targetLanguage,
         }),
       });
 
@@ -102,7 +107,7 @@ export default function ThesisAgentPage() {
           thesisTitle,
           methodologySummary: 'Deep Reinforcement Learning trained on Sharjah meteorological dataset',
           academicLevel: 'MASTERS',
-          language: isArabic ? 'ar' : 'en',
+          language: targetLanguage,
         }),
       });
 
@@ -216,6 +221,36 @@ export default function ThesisAgentPage() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    {isArabic ? 'لغة المراجعة النقدية' : 'Critique Language'}
+                  </label>
+                  <div className="flex items-center gap-4 text-xs font-medium text-slate-700 dark:text-slate-300">
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="thesisCritiqueLang"
+                        value="ar"
+                        checked={targetLanguage === 'ar'}
+                        onChange={() => setTargetLanguage('ar')}
+                        className="text-amber-700 focus:ring-amber-600"
+                      />
+                      <span>العربية (Arabic)</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="thesisCritiqueLang"
+                        value="en"
+                        checked={targetLanguage === 'en'}
+                        onChange={() => setTargetLanguage('en')}
+                        className="text-amber-700 focus:ring-amber-600"
+                      />
+                      <span>English</span>
+                    </label>
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   disabled={isReviewing}
@@ -321,23 +356,51 @@ export default function ThesisAgentPage() {
                 </p>
               </div>
 
-              <button
-                onClick={handleSimulateDefense}
-                disabled={isSimulatingDefense}
-                className="inline-flex items-center gap-2 rounded-2xl bg-amber-700 px-6 py-3 text-xs sm:text-sm font-bold text-white shadow hover:bg-amber-800 disabled:opacity-50 transition shrink-0"
-              >
-                {isSimulatingDefense ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    <span>{isArabic ? 'جاري توليد أسئلة اللجنة...' : 'Generating Questions...'}</span>
-                  </>
-                ) : (
-                  <>
-                    <HelpCircle className="h-4 w-4" />
-                    <span>{isArabic ? 'توليد أسئلة المناقشة الحية' : 'Simulate Viva Questions'}</span>
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex items-center gap-3 text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <span className="font-bold">{isArabic ? 'لغة الأسئلة:' : 'Questions Language:'}</span>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="thesisVivaLang"
+                      value="ar"
+                      checked={targetLanguage === 'ar'}
+                      onChange={() => setTargetLanguage('ar')}
+                      className="text-amber-700 focus:ring-amber-600"
+                    />
+                    <span>العربية (Arabic)</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="thesisVivaLang"
+                      value="en"
+                      checked={targetLanguage === 'en'}
+                      onChange={() => setTargetLanguage('en')}
+                      className="text-amber-700 focus:ring-amber-600"
+                    />
+                    <span>English</span>
+                  </label>
+                </div>
+
+                <button
+                  onClick={handleSimulateDefense}
+                  disabled={isSimulatingDefense}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-amber-700 px-6 py-3 text-xs sm:text-sm font-bold text-white shadow hover:bg-amber-800 disabled:opacity-50 transition shrink-0"
+                >
+                  {isSimulatingDefense ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                      <span>{isArabic ? 'جاري توليد أسئلة اللجنة...' : 'Generating Questions...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <HelpCircle className="h-4 w-4" />
+                      <span>{isArabic ? 'توليد أسئلة المناقشة الحية' : 'Simulate Viva Questions'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 

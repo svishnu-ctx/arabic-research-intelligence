@@ -50,6 +50,11 @@ export default function LiteratureAgentPage() {
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [reviewResult, setReviewResult] = useState<LiteratureReviewResult | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
+
+  React.useEffect(() => {
+    setTargetLanguage(isArabic ? 'ar' : 'en');
+  }, [isArabic]);
 
   // Search real academic publications from OpenAlex & Crossref
   const handleSearch = async (e: React.FormEvent) => {
@@ -106,7 +111,7 @@ export default function LiteratureAgentPage() {
           topic: query,
           papers: formattedPapers,
           publications: formattedPapers,
-          language: isArabic ? 'ar' : 'en',
+          language: targetLanguage,
         }),
       });
 
@@ -307,7 +312,33 @@ export default function LiteratureAgentPage() {
           </div>
 
           {/* Action to Synthesize Selected Papers */}
-          <div className="pt-2 flex justify-end">
+          <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-xs font-medium text-slate-700 dark:text-slate-300">
+              <span className="font-bold">{isArabic ? 'لغة التوليف الأكاديمي:' : 'Synthesis Language:'}</span>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="radio"
+                  name="litTargetLanguage"
+                  value="ar"
+                  checked={targetLanguage === 'ar'}
+                  onChange={() => setTargetLanguage('ar')}
+                  className="text-indigo-700 focus:ring-indigo-600"
+                />
+                <span>العربية (Arabic)</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="radio"
+                  name="litTargetLanguage"
+                  value="en"
+                  checked={targetLanguage === 'en'}
+                  onChange={() => setTargetLanguage('en')}
+                  className="text-indigo-700 focus:ring-indigo-600"
+                />
+                <span>English</span>
+              </label>
+            </div>
+
             <button
               onClick={handleSynthesize}
               disabled={isSynthesizing || selectedPapers.length === 0}
