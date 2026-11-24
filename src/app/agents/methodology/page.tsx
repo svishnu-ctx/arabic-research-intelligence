@@ -15,8 +15,11 @@ import {
   Layers,
   ChevronRight,
   ShieldCheck,
-  Send
+  Send,
+  Bot,
+  Sliders
 } from 'lucide-react';
+import AgentChatInterface from '@/components/agents/AgentChatInterface';
 
 interface MethodologyAdvice {
   researchDesign: string;
@@ -64,6 +67,7 @@ export default function MethodologyAgentPage() {
   const [isAdvising, setIsAdvising] = useState(false);
   const [methodologyAdvice, setMethodologyAdvice] = useState<MethodologyAdvice | null>(null);
   const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
+  const [viewMode, setViewMode] = useState<'FORM' | 'CHAT'>('FORM');
 
   React.useEffect(() => {
     setTargetLanguage(isArabic ? 'ar' : 'en');
@@ -176,7 +180,60 @@ export default function MethodologyAgentPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Dual Mode Switcher: Form & Statistics vs Interactive Chatbot */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 w-fit">
+        <button
+          type="button"
+          onClick={() => setViewMode('FORM')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'FORM'
+              ? 'bg-white dark:bg-slate-900 text-purple-700 dark:text-purple-400 shadow-sm border border-slate-200/50 dark:border-slate-700'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Sliders className="w-4 h-4" />
+          <span>{isArabic ? 'نموذج التوليد المنظم ومحلل البيانات' : 'Structured Generator & Data Analyzer'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('CHAT')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'CHAT'
+              ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Bot className="w-4 h-4" />
+          <span>{isArabic ? 'المحادثة التفاعلية (Chatbot)' : 'Interactive Chatbot'}</span>
+        </button>
+      </div>
+
+      {/* VIEW MODE 1: CHATBOT */}
+      {viewMode === 'CHAT' ? (
+        <AgentChatInterface
+          agentType="methodology"
+          agentNameAr="محلل المنهجية والإحصاء البحثي"
+          agentNameEn="Methodology & Statistical Rigor Validator"
+          agentRoleAr="تصميم المنهجيات التجريبية والكمية، فحص العينات، واختيار الاختبارات المعلمية واللامعلمية"
+          agentRoleEn="Empirical & quantitative research design, sampling validation, parametric & non-parametric tests"
+          initialGreetingAr="أهلاً بك! أنا محلل المنهجية والإحصاء البحثي في جامعة الواحة. كيف أساعدك اليوم في تصميم منهجية دراستك، اختيار الاختبارات الإحصائية المناسبة (ANOVA، الانحدار، كاي تربيع)، أو فحص جودة البيانات؟"
+          initialGreetingEn="Welcome! I am your Methodology & Statistical Rigor Validator at Al-Waha University. How can I assist you with research design, statistical test selection (ANOVA, Regression, Chi-Square), or dataset validation?"
+          suggestedPromptsAr={[
+            'متى أستخدم اختبار ANOVA الأحادي بدلاً من اختبارات غير معلمية مثل Kruskal-Wallis؟',
+            'كيف أبرر حجم عينة يتكون من 150 مشاركاً في دراسة مسحية؟',
+            'ما هي خطوات فحص استقرار السلاسل الزمنية (Stationarity) للبيانات البيئية؟',
+            'صغ لي خطة منهجية لتحليل الانحدار المتعدد لاختبار الفرضيات الأكاديمية.',
+          ]}
+          suggestedPromptsEn={[
+            'When should I use One-Way ANOVA vs non-parametric tests like Kruskal-Wallis?',
+            'How do I justify a sample size of 150 respondents in an empirical survey?',
+            'What are the steps to test time-series stationarity for renewable generation data?',
+            'Draft a methodology section explaining Multiple Linear Regression assumptions.',
+          ]}
+          currentContext={topic ? `Research Topic: ${topic}` : ''}
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Section 1: Methodology Advisor */}
         <div className="lg:col-span-6 space-y-4">
           <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm">
@@ -503,6 +560,7 @@ export default function MethodologyAgentPage() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

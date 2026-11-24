@@ -18,8 +18,11 @@ import {
   Table,
   Plus,
   Copy,
-  Check
+  Check,
+  Bot,
+  MessageSquare
 } from 'lucide-react';
+import AgentChatInterface from '@/components/agents/AgentChatInterface';
 
 interface Publication {
   id: string;
@@ -65,6 +68,7 @@ export default function LiteratureAgentPage() {
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<'FORM' | 'CHAT'>('FORM');
 
   React.useEffect(() => {
     setTargetLanguage(isArabic ? 'ar' : 'en');
@@ -192,7 +196,61 @@ export default function LiteratureAgentPage() {
         )}
       </div>
 
-      {/* Real Academic Search Bar */}
+      {/* Dual Mode Switcher: Form & Matrix vs Interactive Chatbot */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 w-fit">
+        <button
+          type="button"
+          onClick={() => setViewMode('FORM')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'FORM'
+              ? 'bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 shadow-sm border border-slate-200/50 dark:border-slate-700'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Table className="w-4 h-4" />
+          <span>{isArabic ? 'نموذج التوليد المنظم والمصفوفة' : 'Structured Generator & Matrix'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('CHAT')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'CHAT'
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Bot className="w-4 h-4" />
+          <span>{isArabic ? 'المحادثة التفاعلية (Chatbot)' : 'Interactive Chatbot'}</span>
+        </button>
+      </div>
+
+      {/* VIEW MODE 1: CHATBOT */}
+      {viewMode === 'CHAT' ? (
+        <AgentChatInterface
+          agentType="literature"
+          agentNameAr="مستكشف الأدبيات والدراسات السابقة"
+          agentNameEn="Academic Literature Scout"
+          agentRoleAr="فحص الفهارس العالمية، استخراج الثغرات البحثية، وتوليد مصفوفات المقارنة والتوثيق"
+          agentRoleEn="Global scholarly discovery, research gap analysis, comparative synthesis & APA citation"
+          initialGreetingAr="مرحباً بك! أنا مستكشف الأدبيات الأكاديمي بجامعة الواحة. أستطيع مساعدتك في مسح الأوراق العلمية عبر OpenAlex وCrossref، وتحليل الثغرات المنهجية، وبناء مصفوفات المقارنة والتوثيق بأسلوب APA. ما هو موضوع بحثك أو التساؤل الذي ترغب باستكشافه؟"
+          initialGreetingEn="Welcome! I am your Academic Literature Scout at Al-Waha University. I can assist you in surveying peer-reviewed papers via OpenAlex and Crossref, identifying methodology gaps, and building APA synthesis matrices. What topic are you investigating today?"
+          suggestedPromptsAr={[
+            'ما هي أبرز الثغرات البحثية في مجال الشبكات الذكية للطاقة في الإمارات؟',
+            'كيف أصيغ مصفوفة مقارنة منهجية للأدبيات المنشورة بين 2020 و2026؟',
+            'اقترح هيكلية لفصل مراجعة الأدبيات (Chapter 2) في رسالة ماجستير.',
+            'صغ لي اقتباسات دقيقة بأسلوب APA 7th Edition حول تعلم التعزيز في شبكات الطاقة.',
+          ]}
+          suggestedPromptsEn={[
+            'What are the key research gaps in UAE renewable microgrid intelligence?',
+            'How do I structure a comparative literature synthesis matrix for 2020-2026 papers?',
+            'Outline Chapter 2 (Literature Review) for an AI engineering dissertation.',
+            'Provide APA 7th Edition citation templates for institutional repository reports.',
+          ]}
+          currentContext={query ? `Search query: ${query}` : ''}
+        />
+      ) : (
+        <>
+          {/* Real Academic Search Bar */}
       <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm">
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -530,6 +588,8 @@ export default function LiteratureAgentPage() {
           )}
         </div>
       )}
-    </div>
+    </>
+  )}
+</div>
   );
 }

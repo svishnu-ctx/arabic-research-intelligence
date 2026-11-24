@@ -15,8 +15,11 @@ import {
   ShieldCheck,
   Send,
   Download,
-  BookOpen
+  BookOpen,
+  Bot,
+  Sliders
 } from 'lucide-react';
+import AgentChatInterface from '@/components/agents/AgentChatInterface';
 
 interface ThesisReviewResult {
   overallAssessment: string;
@@ -39,6 +42,7 @@ export default function ThesisAgentPage() {
   const isArabic = language === 'ar';
 
   const [activeTab, setActiveTab] = useState<'REVIEW' | 'DEFENSE'>('REVIEW');
+  const [viewMode, setViewMode] = useState<'FORM' | 'CHAT'>('FORM');
 
   // Chapter Review Form
   const [chapterTitle, setChapterTitle] = useState('Chapter 3: Methodology and Microgrid Architecture');
@@ -164,7 +168,61 @@ export default function ThesisAgentPage() {
         </div>
       </div>
 
-      {activeTab === 'REVIEW' ? (
+      {/* Dual Mode Switcher: Form & Viva Simulator vs Interactive Chatbot */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 w-fit">
+        <button
+          type="button"
+          onClick={() => setViewMode('FORM')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'FORM'
+              ? 'bg-white dark:bg-slate-900 text-amber-700 dark:text-amber-400 shadow-sm border border-slate-200/50 dark:border-slate-700'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Sliders className="w-4 h-4" />
+          <span>{isArabic ? 'نموذج التدقيق المنظم ومحاكي اللجنة' : 'Structured Review & Viva Matrix'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('CHAT')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'CHAT'
+              ? 'bg-amber-600 text-white shadow-md shadow-amber-500/20'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Bot className="w-4 h-4" />
+          <span>{isArabic ? 'المحادثة التفاعلية مع لجنة المناقشة (Viva Chatbot)' : 'Interactive Viva Chatbot'}</span>
+        </button>
+      </div>
+
+      {/* VIEW MODE 1: CHATBOT */}
+      {viewMode === 'CHAT' ? (
+        <AgentChatInterface
+          agentType="thesis"
+          agentNameAr="مدقق الرسائل ومحاكي لجان المناقشة"
+          agentNameEn="Thesis Reviewer & Viva Defense Examiner"
+          agentRoleAr="نقد الفصول الأكاديمية، محاكاة أسئلة لجان المناقشة العلنية، وتدريب الباحثين على الدفاع العلمي"
+          agentRoleEn="Dissertation chapter evaluation, challenging viva voce simulation, and scholarly defense coaching"
+          initialGreetingAr="مرحباً بك في منصة محاكاة لجان المناقشة والتدقيق الأكاديمي بجامعة الواحة. أنا مستعد لتدريبك على أصعب أسئلة لجان التحكيم ونقد فصول رسالتك. ما هو عنوان رسالتك أو الفصل الذي ترغب بمناقشته؟"
+          initialGreetingEn="Welcome to the Thesis Review & Viva Defense Simulator at Al-Waha University. I am ready to challenge and coach you through the most rigorous external examiner questions and chapter reviews. What is your dissertation title or draft focus?"
+          suggestedPromptsAr={[
+            'وجه لي أصعب 3 أسئلة قد يطرحها الممتحن الخارجي حول حدود دراستي الميدانية.',
+            'راجع هذا المقطع من الفصل الثالث ونبهني إلى أي ضعف في تبرير اختيار العينة.',
+            'كيف أجيب بثقة إذا سألني الممتحن: "ما هي القيمة المضافة الحقيقية لبحثك مقارنة بدراسة فلان؟"',
+            'هل صياغة فرضياتي الأكاديمية دقيقة وقابلة للاختبار التجريبي؟',
+          ]}
+          suggestedPromptsEn={[
+            'Ask me the 3 most challenging Viva questions regarding my empirical limitations.',
+            'Review this paragraph from Chapter 3 and flag weaknesses in sample justification.',
+            'How should I respond if an examiner asks: "What is your novel theoretical contribution?"',
+            'Check if my research hypotheses are empirically testable and falsifiable.',
+          ]}
+          currentContext={thesisTitle ? `Thesis: ${thesisTitle}` : ''}
+        />
+      ) : (
+        <>
+          {activeTab === 'REVIEW' ? (
         /* Chapter Review Mode */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-6 space-y-4">
@@ -454,6 +512,8 @@ export default function ThesisAgentPage() {
           )}
         </div>
       )}
-    </div>
+    </>
+  )}
+</div>
   );
 }

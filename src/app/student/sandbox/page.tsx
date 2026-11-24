@@ -24,7 +24,10 @@ import {
   Lock,
   Layers,
   HelpCircle,
-  MessageSquare
+  MessageSquare,
+  Copy,
+  Download,
+  RefreshCw
 } from 'lucide-react';
 
 interface SandboxAgent {
@@ -85,6 +88,61 @@ export default function StudentSandboxPage() {
   const [chatInput, setChatInput] = useState<string>('');
   const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'assistant'; text: string; meta?: any }>>([]);
   const [chatting, setChatting] = useState<boolean>(false);
+
+  // Dual-Mode state for active custom agent modal
+  const [modalMode, setModalMode] = useState<'CHAT' | 'FORM'>('CHAT');
+  const [formTopic, setFormTopic] = useState<string>('تحسين كفاءة شبكات الطاقة المتجددة في الإمارات');
+  const [formDraftText, setFormDraftText] = useState<string>('تقوم الدراسة بفحص خوارزميات التعلم المعزز لموازنة أحمال البطاريات في ظل درجات حرارة تتجاوز 45 درجة مئوية.');
+  const [formOutputType, setFormOutputType] = useState<string>('CRITIQUE');
+  const [formResult, setFormResult] = useState<string>('');
+  const [generatingForm, setGeneratingForm] = useState<boolean>(false);
+  const [formCopied, setFormCopied] = useState<boolean>(false);
+
+  const handleGenerateCustomForm = async () => {
+    if (!activeChatAgent || !formDraftText.trim() || generatingForm) return;
+    setGeneratingForm(true);
+    setFormResult('');
+
+    const styleLabel =
+      formOutputType === 'CRITIQUE'
+        ? (isArabic ? 'نقد تحليلي وتطوير منهجي شامل' : 'Comprehensive Methodological Critique')
+        : formOutputType === 'HYPOTHESIS'
+        ? (isArabic ? 'صياغة فرضيات علمية قابلة للقياس' : 'Empirically Testable Hypotheses')
+        : (isArabic ? 'تقرير أكاديمي موثق بأسلوب APA' : 'APA 7th Referenced Report');
+
+    const structuredPrompt = isArabic
+      ? `[الموضوع / المجال الأكاديمي]: ${formTopic}
+[مسودة النص / المعطيات]:
+${formDraftText}
+
+[المطلوب الأكاديمي]: توليد تقرير أكاديمي منظم ومفصل بصيغة (${styleLabel}) يبرز نقاط القوة، الثغرات المنهجية، والتوصيات الإجرائية المباشرة.`
+      : `[Topic]: ${formTopic}
+[Draft Content]:
+${formDraftText}
+[Goal]: Generate a structured academic report (${styleLabel}) detailing strengths, methodological gaps, and actionable revisions.`;
+
+    try {
+      const res = await fetch('/api/student/sandbox/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agentId: activeChatAgent.id,
+          prompt: structuredPrompt,
+          language: isArabic ? 'ar' : 'en',
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.result) {
+        setFormResult(data.result.reply);
+      } else {
+        setFormResult(isArabic ? 'تعذر توليد التقرير حالياً.' : 'Failed to generate report.');
+      }
+    } catch {
+      setFormResult(isArabic ? 'خطأ في الاتصال بالنموذج.' : 'Connection error.');
+    } finally {
+      setGeneratingForm(false);
+    }
+  };
 
   const fetchAgents = async () => {
     setLoading(true);
@@ -924,8 +982,8 @@ export default function StudentSandboxPage() {
       {activeChatAgent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
+            {/* Modal Header with Dual-Mode Switcher */}
+            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-50 dark:bg-slate-800/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                   <Bot className="w-5 h-5" />
@@ -939,6 +997,35 @@ export default function StudentSandboxPage() {
                   </p>
                 </div>
               </div>
+
+              {/* Mode Switcher Tabs */}
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-200/70 dark:bg-slate-800 border border-slate-300/60 dark:border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => setModalMode('CHAT')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    modalMode === 'CHAT'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                  }`}
+                >
+                  <Bot className="w-3.5 h-3.5" />
+                  <span>{isArabic ? 'محادثة تفاعلية' : 'Interactive Chat'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalMode('FORM')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    modalMode === 'FORM'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                  }`}
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>{isArabic ? 'نموذج التوليد المنظم' : 'Structured Form'}</span>
+                </button>
+              </div>
+
               <button
                 onClick={() => setActiveChatAgent(null)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -947,55 +1034,202 @@ export default function StudentSandboxPage() {
               </button>
             </div>
 
-            {/* Chat Messages Body */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 min-h-[300px]">
-              {chatHistory.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
-                >
-                  <div
-                    className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed ${
-                      msg.role === 'user'
-                        ? 'bg-emerald-600 text-white rounded-br-none'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none'
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                  {msg.meta && (
-                    <span className="text-[10px] text-slate-400 mt-1 px-1">
-                      {msg.meta.model} ({msg.meta.latencyMs}ms)
-                    </span>
+            {/* DUAL MODE BODY */}
+            {modalMode === 'CHAT' ? (
+              <>
+                {/* Chat Messages Body */}
+                <div className="flex-1 p-4 overflow-y-auto space-y-3 min-h-[300px]">
+                  {chatHistory.map((msg, i) => (
+                    <div
+                      key={i}
+                      className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+                    >
+                      <div
+                        className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed ${
+                          msg.role === 'user'
+                            ? 'bg-emerald-600 text-white rounded-br-none'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none'
+                        }`}
+                      >
+                        {msg.text}
+                      </div>
+                      {msg.meta && (
+                        <span className="text-[10px] text-slate-400 mt-1 px-1">
+                          {msg.meta.model} ({msg.meta.latencyMs}ms)
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                  {chatting && (
+                    <div className="flex items-center gap-2 text-xs text-slate-400 p-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      <span>{isArabic ? 'الوكيل يفكر ويكتب الرد عبر Fanar...' : 'Agent thinking via Fanar...'}</span>
+                    </div>
                   )}
                 </div>
-              ))}
-              {chatting && (
-                <div className="flex items-center gap-2 text-xs text-slate-400 p-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                  <span>{isArabic ? 'الوكيل يفكر ويكتب الرد عبر Fanar...' : 'Agent thinking via Fanar...'}</span>
-                </div>
-              )}
-            </div>
 
-            {/* Chat Input Bar */}
-            <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSendChat()}
-                placeholder={isArabic ? 'اكتب استفسارك للوكيل...' : 'Ask your agent...'}
-                className="flex-1 px-4 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <button
-                onClick={handleSendChat}
-                disabled={chatting || !chatInput.trim()}
-                className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white transition-colors"
-              >
-                <Send className="w-4 h-4" />
-              </button>
-            </div>
+                {/* Chat Input Bar */}
+                <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendChat()}
+                    placeholder={isArabic ? 'اكتب استفسارك للوكيل...' : 'Ask your agent...'}
+                    className="flex-1 px-4 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <button
+                    onClick={handleSendChat}
+                    disabled={chatting || !chatInput.trim()}
+                    className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white transition-colors"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* STRUCTURED FORM MODE */
+              <div className="flex-1 p-5 overflow-y-auto space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      {isArabic ? 'موضوع البحث / المجال الأكاديمي' : 'Research Topic / Field'}
+                    </label>
+                    <input
+                      type="text"
+                      value={formTopic}
+                      onChange={(e) => setFormTopic(e.target.value)}
+                      placeholder={isArabic ? 'مثال: الشبكات الذكية للطاقة في الإمارات...' : 'e.g., Renewable Microgrids in UAE...'}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      {isArabic ? 'صيغة المخرج المطلوب' : 'Target Output Style'}
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFormOutputType('CRITIQUE')}
+                        className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                          formOutputType === 'CRITIQUE'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 text-emerald-800 dark:text-emerald-300'
+                            : 'border-slate-200 dark:border-slate-700 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {isArabic ? 'نقد وتطوير منهجي' : 'Critique & Rigor'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormOutputType('HYPOTHESIS')}
+                        className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                          formOutputType === 'HYPOTHESIS'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 text-emerald-800 dark:text-emerald-300'
+                            : 'border-slate-200 dark:border-slate-700 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {isArabic ? 'صياغة فرضيات' : 'Hypotheses'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormOutputType('APA_REPORT')}
+                        className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                          formOutputType === 'APA_REPORT'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 text-emerald-800 dark:text-emerald-300'
+                            : 'border-slate-200 dark:border-slate-700 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {isArabic ? 'تقرير موثق (APA)' : 'APA Report'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      {isArabic ? 'مسودة النص / الملخص أو الفرضيات المراد تقييمها' : 'Input Draft / Abstract / Problem Statement'}
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={formDraftText}
+                      onChange={(e) => setFormDraftText(e.target.value)}
+                      placeholder={isArabic ? 'الصق نص مسودتك أو فرضياتك هنا...' : 'Paste your draft text or hypotheses here...'}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleGenerateCustomForm}
+                      disabled={generatingForm || !formDraftText.trim()}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-102"
+                    >
+                      {generatingForm ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>{isArabic ? 'جاري التحليل بنموذج Fanar...' : 'Generating via Fanar...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>{isArabic ? 'توليد التقرير الأكاديمي المباشر' : 'Generate Academic Report'}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Generated Structured Output */}
+                {formResult && (
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>{isArabic ? 'التقرير الأكاديمي المنظم المولد:' : 'Generated Academic Report:'}</span>
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(formResult);
+                            setFormCopied(true);
+                            setTimeout(() => setFormCopied(false), 2000);
+                          }}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100"
+                        >
+                          {formCopied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                          <span>{formCopied ? (isArabic ? 'تم النسخ' : 'Copied') : (isArabic ? 'نسخ التقرير' : 'Copy')}</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setChatHistory([
+                              ...chatHistory,
+                              {
+                                role: 'user',
+                                text: `[تقرير منظم]: ${formTopic} (${formOutputType})`,
+                              },
+                              {
+                                role: 'assistant',
+                                text: formResult,
+                              },
+                            ]);
+                            setModalMode('CHAT');
+                          }}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[11px] font-semibold hover:bg-emerald-500 shadow-xs"
+                          title={isArabic ? 'نقل التقرير إلى الشات لمواصلة النقاش مع الوكيل' : 'Continue discussion in Chat'}
+                        >
+                          <Bot className="w-3 h-3" />
+                          <span>{isArabic ? 'متابعة النقاش في الشات' : 'Continue in Chat'}</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div className="text-xs text-slate-800 dark:text-slate-100 whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      {formResult}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

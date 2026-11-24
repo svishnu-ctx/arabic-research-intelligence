@@ -17,8 +17,11 @@ import {
   ListOrdered,
   HelpCircle,
   Compass,
-  BookmarkPlus
+  BookmarkPlus,
+  Bot,
+  Sliders
 } from 'lucide-react';
+import AgentChatInterface from '@/components/agents/AgentChatInterface';
 
 interface ProposalData {
   title: string;
@@ -46,6 +49,7 @@ export default function ProposalAgentPage() {
     'Using deep reinforcement learning to balance intermittent solar power in smart microgrids within the UAE climate.'
   );
   const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
+  const [viewMode, setViewMode] = useState<'FORM' | 'CHAT'>('FORM');
 
   React.useEffect(() => {
     setTargetLanguage(isArabic ? 'ar' : 'en');
@@ -156,7 +160,60 @@ export default function ProposalAgentPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Dual Mode Switcher: Form & Proposal Generator vs Interactive Chatbot */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 w-fit">
+        <button
+          type="button"
+          onClick={() => setViewMode('FORM')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'FORM'
+              ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 shadow-sm border border-slate-200/50 dark:border-slate-700'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Sliders className="w-4 h-4" />
+          <span>{isArabic ? 'نموذج المقترح المنظم' : 'Structured Proposal Generator'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('CHAT')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            viewMode === 'CHAT'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Bot className="w-4 h-4" />
+          <span>{isArabic ? 'المحادثة التفاعلية لتطوير الفكرة (Chatbot)' : 'Interactive Idea Chatbot'}</span>
+        </button>
+      </div>
+
+      {/* VIEW MODE 1: CHATBOT */}
+      {viewMode === 'CHAT' ? (
+        <AgentChatInterface
+          agentType="proposal"
+          agentNameAr="مطور المقترحات البحثية وصياغة الفرضيات"
+          agentNameEn="Research Proposal & Hypothesis Architect"
+          agentRoleAr="بلورة مشكلة البحث، اشتقاق الأهداف الذكية، وتوليد الفرضيات الصفرية والبديلة"
+          agentRoleEn="Problem statement crystallization, SMART objectives, null & directional hypotheses formulation"
+          initialGreetingAr="أهلاً بك! أنا مطور المقترحات البحثية في جامعة الواحة. دعنا نعمل معاً على بلورة فكرتك البحثية، تحويلها إلى مشكلة علمية دقيقة، وصياغة فرضيات رصينة قابلة للقياس. ما هي فكرتك الأولية؟"
+          initialGreetingEn="Welcome! I am your Research Proposal & Hypothesis Architect at Al-Waha University. Let us turn your research idea into a rigorous problem statement with SMART objectives and testable hypotheses. What is your initial idea?"
+          suggestedPromptsAr={[
+            'ساعدني في صياغة مشكلة بحث حول تطبيقات الذكاء الاصطناعي في الاستدامة المائية.',
+            'كيف أحول هذا الهدف العام إلى 3 أهداف فرعية ذكية وقابلة للقياس؟',
+            'اقترح صياغة فرضيات صفرية وفرضيات بديلة لبحث مقارن.',
+            'ما هي العناصر الأساسية التي يجب أن يتضمنها مقترح الماجستير ليحظى بموافقة اللجنة؟',
+          ]}
+          suggestedPromptsEn={[
+            'Help me formulate a sharp problem statement on AI for water conservation.',
+            'How do I convert a broad research aim into 3 measurable specific objectives?',
+            'Suggest directional and null hypotheses for a comparative experimental study.',
+            'What are the essential components for a winning Master proposal submission?',
+          ]}
+          currentContext={initialIdea ? `Initial Idea: ${initialIdea}` : ''}
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Input Parameters Form (Left Column) */}
         <div className="lg:col-span-5 space-y-4">
           <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm">
@@ -422,6 +479,7 @@ export default function ProposalAgentPage() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
