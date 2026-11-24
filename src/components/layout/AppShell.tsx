@@ -217,7 +217,52 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     },
   ];
 
-  const currentNavItems = isSupervisor ? supervisorNavItems : studentNavItems;
+  const isAdmin = user?.role === 'admin';
+
+  const adminNavItems = [
+    {
+      href: '/dashboard/admin',
+      label: isArabic ? 'لوحة الحوكمة والرقابة' : 'AI Governance & Oversight',
+      icon: LayoutDashboard,
+      badge: 'Admin',
+    },
+    {
+      href: '/dashboard/admin/insights',
+      label: isArabic ? 'تحليلات واستهلاك النماذج' : 'Model Insights & Audits',
+      icon: LineChart,
+      badge: 'Audit',
+    },
+    {
+      href: '/lab/dashboard',
+      label: isArabic ? 'بوابة النماذج ومختبر الذكاء' : 'AI Gateway & Model Lab',
+      icon: Sparkles,
+      badge: 'Gateway',
+    },
+    {
+      href: '/lab/benchmarks',
+      label: isArabic ? 'تقييم النماذج والمقارنات' : 'Benchmarks & Safety',
+      icon: ShieldCheck,
+      badge: null,
+    },
+    {
+      href: '/documents',
+      label: isArabic ? 'مستودع الوثائق المؤسسية' : 'Institutional Corpus',
+      icon: FileText,
+      badge: null,
+    },
+    {
+      href: '/settings',
+      label: isArabic ? 'الإعدادات وسياسات الأمان' : 'Platform Settings',
+      icon: Settings,
+      badge: null,
+    },
+  ];
+
+  const currentNavItems = isSupervisor
+    ? supervisorNavItems
+    : isAdmin
+    ? adminNavItems
+    : studentNavItems;
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100" dir={direction}>
@@ -228,59 +273,87 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className={`flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-md ${
             isSupervisor
               ? 'bg-indigo-700 shadow-indigo-700/20'
+              : isAdmin
+              ? 'bg-purple-700 shadow-purple-700/20'
               : 'bg-emerald-700 shadow-emerald-700/20'
           }`}>
             <GraduationCap className="h-6 w-6 text-white" />
           </div>
           <div className="overflow-hidden">
             <div className={`text-[11px] font-extrabold uppercase tracking-wider ${
-              isSupervisor ? 'text-indigo-800 dark:text-indigo-400' : 'text-emerald-800 dark:text-emerald-400'
+              isSupervisor
+                ? 'text-indigo-800 dark:text-indigo-400'
+                : isAdmin
+                ? 'text-purple-800 dark:text-purple-400'
+                : 'text-emerald-800 dark:text-emerald-400'
             }`}>
               {isArabic ? 'جامعة الواحة' : 'Al-Waha University'}
             </div>
             <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
               {isArabic
-                ? (isSupervisor ? 'بوابة الإشراف الأكاديمي' : 'بوابة الذكاء البحثي للطلبة')
-                : (isSupervisor ? 'Faculty Supervisor Suite' : 'Student Research AI')}
+                ? (isSupervisor ? 'بوابة الإشراف الأكاديمي' : isAdmin ? 'بوابة إدارة وحوكمة الذكاء' : 'بوابة الذكاء البحثي للطلبة')
+                : (isSupervisor ? 'Faculty Supervisor Suite' : isAdmin ? 'AI Governance Portal' : 'Student Research AI')}
             </div>
           </div>
         </div>
 
-        {/* Profile Card (Student vs Supervisor) */}
+        {/* Profile Card (Student vs Supervisor vs Admin) */}
         <div className="p-4 pb-2">
           <div className={`rounded-2xl border p-3.5 ${
             isSupervisor
               ? 'border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/50 dark:bg-indigo-950/20'
+              : isAdmin
+              ? 'border-purple-100 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20'
               : 'border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20'
           }`}>
             <div className="flex items-center justify-between">
               <span className={`text-[10px] font-bold uppercase tracking-wider ${
-                isSupervisor ? 'text-indigo-800 dark:text-indigo-300' : 'text-emerald-800 dark:text-emerald-300'
+                isSupervisor
+                  ? 'text-indigo-800 dark:text-indigo-300'
+                  : isAdmin
+                  ? 'text-purple-800 dark:text-purple-300'
+                  : 'text-emerald-800 dark:text-emerald-300'
               }`}>
                 {isSupervisor
                   ? (isArabic ? 'مشرف أكاديمي وباحث رئيسي' : 'Faculty Research Supervisor')
+                  : isAdmin
+                  ? (isArabic ? 'عميد البحث وحوكمة الذكاء' : 'Dean of Research / Governance')
                   : (isArabic ? 'حساب باحث الدراسات العليا' : 'Graduate Student')}
               </span>
               <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold ${
                 isSupervisor
                   ? 'bg-indigo-200/60 dark:bg-indigo-800/40 text-indigo-900 dark:text-indigo-200'
+                  : isAdmin
+                  ? 'bg-purple-200/60 dark:bg-purple-800/40 text-purple-900 dark:text-purple-200'
                   : 'bg-emerald-200/60 dark:bg-emerald-800/40 text-emerald-900 dark:text-emerald-200'
               }`}>
-                <CheckCircle2 className={`h-3 w-3 ${isSupervisor ? 'text-indigo-700 dark:text-indigo-400' : 'text-emerald-700 dark:text-emerald-400'}`} />
-                {isSupervisor ? 'Faculty' : 'Demo'}
+                <CheckCircle2 className={`h-3 w-3 ${
+                  isSupervisor
+                    ? 'text-indigo-700 dark:text-indigo-400'
+                    : isAdmin
+                    ? 'text-purple-700 dark:text-purple-400'
+                    : 'text-emerald-700 dark:text-emerald-400'
+                }`} />
+                {isSupervisor ? 'Faculty' : isAdmin ? 'Admin' : 'Student'}
               </span>
             </div>
             <div className="mt-1.5 font-bold text-xs text-slate-900 dark:text-white truncate">
-              {user.displayName || (isSupervisor ? 'Dr. Fatima Al-Zahra (د. فاطمة الزهراء)' : 'Maryam Al-Mazrouei (مريم المزروعي)')}
+              {user.displayName || (isSupervisor ? 'Dr. Fatima Al-Zahra' : isAdmin ? 'Prof. Dr. Tariq Al-Nuaimi' : 'Maryam Al-Mazrouei')}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-              {user.email || (isSupervisor ? 'falzahra@alwaha.ac.ae' : 'student@alwaha.ac.ae')}
+              {user.email || (isSupervisor ? 'falzahra@alwaha.ac.ae' : isAdmin ? 'admin.research@alwaha.ac.ae' : 'student@alwaha.ac.ae')}
             </div>
             <div className={`mt-2 text-[10px] font-medium ${
-              isSupervisor ? 'text-indigo-700 dark:text-indigo-300' : 'text-emerald-700 dark:text-emerald-300'
+              isSupervisor
+                ? 'text-indigo-700 dark:text-indigo-300'
+                : isAdmin
+                ? 'text-purple-700 dark:text-purple-300'
+                : 'text-emerald-700 dark:text-emerald-300'
             }`}>
               {isSupervisor
                 ? (isArabic ? 'أستاذ مشارك • كلية الحوسبة والذكاء الاصطناعي' : 'Associate Professor • Computing & AI')
+                : isAdmin
+                ? (isArabic ? 'عمادة البحث العلمي • لجنة حوكمة وأخلاقيات الذكاء' : 'Deanship of Research • AI Governance Board')
                 : (isArabic ? 'ماجستير علوم وهندسة الحاسوب' : 'M.Sc. in Computer Science')}
             </div>
           </div>
@@ -306,6 +379,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className={`rounded-md px-2 py-0.5 text-[9px] font-bold ${
               isSupervisor
                 ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300'
+                : isAdmin
+                ? 'bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300'
                 : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
             }`}>
               Active
@@ -316,14 +391,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Navigation Links */}
         <nav className="flex-1 space-y-0.5 px-3 overflow-y-auto py-2">
           {currentNavItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/dashboard' && item.href !== '/supervisor/dashboard' && pathname?.startsWith(item.href));
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && item.href !== '/supervisor/dashboard' && item.href !== '/dashboard/admin' && pathname?.startsWith(item.href));
             const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${isActive
-                  ? (isSupervisor ? 'bg-indigo-700 text-white shadow-sm' : 'bg-emerald-700 text-white shadow-sm')
+                  ? (isSupervisor
+                    ? 'bg-indigo-700 text-white shadow-sm'
+                    : isAdmin
+                    ? 'bg-purple-700 text-white shadow-sm'
+                    : 'bg-emerald-700 text-white shadow-sm')
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
               >
@@ -338,6 +417,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         ? 'bg-white/20 text-white'
                         : isSupervisor
                         ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300'
+                        : isAdmin
+                        ? 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
                         : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                         }`}
                     >
@@ -375,32 +456,86 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
-            {/* Active Research Project Indicator / Selector */}
-            <div className="flex items-center gap-2">
-              <FolderOpen className="h-4 w-4 text-emerald-600 shrink-0 hidden sm:block" />
-              <div className="text-xs">
-                <span className="text-slate-400 hidden sm:inline">
-                  {isArabic ? 'المشروع النشط:' : 'Active Project:'}{' '}
-                </span>
-                <span className="font-bold text-slate-800 dark:text-slate-200">
-                  {projects.length > 0
-                    ? projects.find((p) => p.id === activeProjectId)?.title || projects[0].title
-                    : isArabic
-                      ? 'الذكاء الاصطناعي في الطاقة المتجددة'
-                      : 'AI in Renewable Energy Optimization'}
+            {/* Active Role Indicator / Context Header */}
+            {isSupervisor ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse" />
+                  <div className="text-xs">
+                    <span className="text-slate-400 hidden sm:inline">
+                      {isArabic ? 'متابعة الدفعة:' : 'Supervised Cohort:'}{' '}
+                    </span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      {isArabic ? '3 باحثين دراسات عليا (مريم، عمر، راشد)' : '3 Candidates (Maryam, Omar, Rashid)'}
+                    </span>
+                  </div>
+                </div>
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 text-[11px] font-bold text-indigo-800 dark:text-indigo-300">
+                  <span>{isArabic ? '2 مهام مراجعة معلقة' : '2 Pending Reviews'}</span>
                 </span>
               </div>
-            </div>
+            ) : user?.role === 'admin' ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+                  <div className="text-xs">
+                    <span className="text-slate-400 hidden sm:inline">
+                      {isArabic ? 'نطاق الإدارة:' : 'Governance Scope:'}{' '}
+                    </span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      {isArabic ? 'بوابة حوكمة الذكاء الاصطناعي الجامعي' : 'University AI Governance & Audits'}
+                    </span>
+                  </div>
+                </div>
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 border border-purple-200 dark:border-purple-800 text-[11px] font-bold text-purple-800 dark:text-purple-300">
+                  <span>{isArabic ? '18,240 مستخدم' : '18,240 Users Active'}</span>
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <FolderOpen className="h-4 w-4 text-emerald-600 shrink-0 hidden sm:block" />
+                  <div className="text-xs">
+                    <span className="text-slate-400 hidden sm:inline">
+                      {isArabic ? 'المشروع النشط:' : 'Active Project:'}{' '}
+                    </span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      {projects.length > 0
+                        ? projects.find((p) => p.id === activeProjectId)?.title || projects[0].title
+                        : isArabic
+                          ? 'الذكاء الاصطناعي في الطاقة المتجددة'
+                          : 'AI in Renewable Energy Optimization'}
+                    </span>
+                  </div>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-[11px] font-bold text-emerald-800 dark:text-emerald-300">
+                  <span>{isArabic ? 'إنجاز الأطروحة: 68%' : 'Thesis Progress: 68%'}</span>
+                  <div className="w-12 h-1.5 bg-emerald-200 dark:bg-emerald-800 rounded-full overflow-hidden">
+                    <div className="w-[68%] h-full bg-emerald-600 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
             {/* Live Fanar Provider Status Pill */}
-            <div className="hidden lg:flex items-center gap-2 rounded-full border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
+            <div className={`hidden lg:flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${
+              isSupervisor
+                ? 'border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300'
+                : user?.role === 'admin'
+                ? 'border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300'
+                : 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+            }`}>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                  isSupervisor ? 'bg-indigo-400' : user?.role === 'admin' ? 'bg-purple-400' : 'bg-emerald-400'
+                }`}></span>
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                  isSupervisor ? 'bg-indigo-500' : user?.role === 'admin' ? 'bg-purple-500' : 'bg-emerald-500'
+                }`}></span>
               </span>
-              <span>Fanar AI • Online</span>
+              <span>Fanar AI • Online ({fanarStatus.latencyMs || 340}ms)</span>
             </div>
 
             {/* Dark / Light Toggle */}

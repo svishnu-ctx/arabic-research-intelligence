@@ -58,12 +58,19 @@ export async function POST(req: NextRequest) {
       (username.toLowerCase() === 'falzahra@alwaha.ac.ae' || username.toLowerCase() === 'supervisor' || username.toLowerCase() === 'supervisor_demo') &&
       (password === 'Student@123' || password === 'Supervisor@123');
 
+    const isMockAdmin =
+      (username.toLowerCase() === 'admin_demo' || username.toLowerCase() === 'admin' || username.toLowerCase() === 'admin.research@alwaha.ac.ae') &&
+      (password === 'Student@123' || password === 'Admin@123');
+
     let account = DEMO_ACCOUNTS[username] || DEMO_ACCOUNTS[username.toLowerCase()];
     if (!account && isMockStudent) {
       account = DEMO_ACCOUNTS['student@alwaha.ac.ae'];
     }
     if (!account && isMockSupervisor) {
       account = DEMO_ACCOUNTS['falzahra@alwaha.ac.ae'];
+    }
+    if (!account && isMockAdmin) {
+      account = DEMO_ACCOUNTS['admin_demo'];
     }
 
     if (!account) {
@@ -139,10 +146,33 @@ export async function POST(req: NextRequest) {
         status: 200,
         headers: {
           'Cache-Control': 'no-store',
-          'Set-Cookie': cookieOptions,
         },
       }
     );
+
+    // Set HttpOnly secure session cookies
+    res.cookies.set('ari_session_token', session.id, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: 1800,
+      secure: isProd,
+    });
+
+    res.cookies.set('alwaha_session_token', session.id, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 1800,
+      secure: isProd,
+    });
+
+    res.cookies.set('alwaha_role', user.role, {
+      path: '/',
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 1800,
+    });
 
     return res;
   } catch (err) {

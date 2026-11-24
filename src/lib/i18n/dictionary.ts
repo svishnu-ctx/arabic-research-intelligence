@@ -229,7 +229,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       deanTitle: 'أ.د. طارق النعيمي (عميد البحث العلمي)',
       supervisorTitle: 'د. فاطمة الزهراء (مشرف بحوث كلية العلوم)',
       scholarTitle: 'عمر المنصور (مرشح دكتوراه)',
-      studentTitle: 'مريم القاسمي (طالبة ماجستير علوم حاسوب)',
+      studentTitle: 'مريم المزروعي (طالبة ماجستير علوم حاسوب)',
     },
     privacy: {
       bannerTitle: 'إشعار خصوصية البيانات الأكاديمية (Google AI Studio Free Tier)',
@@ -390,7 +390,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       deanTitle: 'Prof. Dr. Tariq Al-Nuaimi (Dean of Research)',
       supervisorTitle: 'Dr. Fatima Al-Zahra (Science Faculty Supervisor)',
       scholarTitle: 'Omar Al-Mansoor (Ph.D. Candidate)',
-      studentTitle: 'Mariam Al-Qasimi (M.Sc. Computer Science)',
+      studentTitle: 'Maryam Al-Mazrouei (M.Sc. Computer Science)',
     },
     privacy: {
       bannerTitle: 'Academic Research Data Privacy Disclosure (Google AI Studio Free Tier)',
