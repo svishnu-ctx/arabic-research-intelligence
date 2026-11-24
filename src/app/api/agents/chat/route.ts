@@ -159,7 +159,7 @@ export async function POST(req: Request) {
     const isArabic = language === 'ar';
 
     // Epic 6: ALW-601 PII & Research Leakage Filter on incoming prompts
-    const lastMessage = messages[messages.length - 1];
+    const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
     let sanitizedLastMessage = '';
     let piiDetections: any[] = [];
 
@@ -317,9 +317,10 @@ According to academic standards, we recommend aligning this formulation with pee
         },
       });
     }
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Agent Chat API Error:', error);
     return NextResponse.json(
-      { success: false, error: 'Internal agent chat service error' },
+      { success: false, error: error?.message || 'Internal agent chat service error' },
       { status: 500 }
     );
   }
