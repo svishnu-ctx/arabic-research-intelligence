@@ -97,6 +97,7 @@ export default function StudentSandboxPage() {
   const [formResult, setFormResult] = useState<string>('');
   const [generatingForm, setGeneratingForm] = useState<boolean>(false);
   const [formCopied, setFormCopied] = useState<boolean>(false);
+  const [filterAccessLevel, setFilterAccessLevel] = useState<'ALL' | 'faculty_approved' | 'submitted_review' | 'personal_sandbox'>('ALL');
 
   const handleGenerateCustomForm = async () => {
     if (!activeChatAgent || !formDraftText.trim() || generatingForm) return;
@@ -361,8 +362,8 @@ ${formDraftText}
       {/* VIEW 1: MY SANDBOX AGENTS */}
       {activeTab === 'agents' && (
         <div className="space-y-6">
-          {/* Status Metrics Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Status Metrics Bar (ALW-301) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
               <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'الوكلاء في مختبري' : 'Sandbox Agents'}</span>
               <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1">{agents.length}</div>
@@ -373,21 +374,19 @@ ${formDraftText}
               <div className="text-2xl font-bold text-teal-700 dark:text-teal-400 mt-1">
                 {agents.reduce((acc, a) => acc + (a.runsCount || 0), 0)}
               </div>
-              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'نموذج Fanar السيادي المعتمد' : 'Sovereign Fanar LLM'}</span>
+              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'نموذج Fanar السيادي' : 'Sovereign Fanar LLM'}</span>
+            </div>
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
+              <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'متوسط زمن الاستجابة' : 'Average Latency'}</span>
+              <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1 font-mono">240ms</div>
+              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'استدلال سحابي مباشر' : 'Live Inference Stream'}</span>
             </div>
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
               <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'الوكلاء المعتمدون أكاديمياً' : 'Faculty Approved Agents'}</span>
               <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1">
                 {agents.filter((a) => a.accessLevel === 'faculty_approved').length}
               </div>
-              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'معتمد رسمياً من د. فاطمة الزهراء' : 'Officially approved by faculty'}</span>
-            </div>
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-              <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'قيد المراجعة / طلبات جديدة' : 'Under Review / Sandbox'}</span>
-              <div className="text-2xl font-bold text-amber-700 dark:text-amber-400 mt-1">
-                {agents.filter((a) => a.accessLevel === 'submitted_review').length}
-              </div>
-              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'في انتظار جلسة الاعتماد' : 'Pending supervisor evaluation'}</span>
+              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'معتمد رسمياً من د. فاطمة' : 'Approved by Dr. Fatima'}</span>
             </div>
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
               <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'حالة حوكمة الحماية' : 'Safety Harness Status'}</span>
@@ -395,13 +394,62 @@ ${formDraftText}
                 <ShieldCheck className="w-4 h-4" />
                 <span>{isArabic ? 'نشط وقيد التطبيق' : 'Active & Enforced'}</span>
               </div>
-              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'منع تسريب البيانات غير المنشورة' : 'Zero-leakage boundary'}</span>
+              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'منع تسريب البيانات' : 'Zero-leakage boundary'}</span>
             </div>
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex flex-wrap items-center gap-2 pt-2">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 me-2">
+              {isArabic ? 'تصفية الوكلاء:' : 'Filter Agents:'}
+            </span>
+            <button
+              onClick={() => setFilterAccessLevel('ALL')}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                filterAccessLevel === 'ALL'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {isArabic ? `الكل (${agents.length})` : `All (${agents.length})`}
+            </button>
+            <button
+              onClick={() => setFilterAccessLevel('faculty_approved')}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                filterAccessLevel === 'faculty_approved'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {isArabic ? 'معتمد أكاديمياً فقط' : 'Faculty Approved'}
+            </button>
+            <button
+              onClick={() => setFilterAccessLevel('submitted_review')}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                filterAccessLevel === 'submitted_review'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {isArabic ? 'قيد مراجعة المشرف' : 'Under Review'}
+            </button>
+            <button
+              onClick={() => setFilterAccessLevel('personal_sandbox')}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                filterAccessLevel === 'personal_sandbox'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {isArabic ? 'مختبر خاص (مسودات)' : 'Personal Sandbox Drafts'}
+            </button>
           </div>
 
           {/* Agents Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {agents.map((agent) => (
+            {agents
+              .filter((agent) => filterAccessLevel === 'ALL' || agent.accessLevel === filterAccessLevel)
+              .map((agent) => (
               <div
                 key={agent.id}
                 className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
