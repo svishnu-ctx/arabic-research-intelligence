@@ -139,6 +139,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       badge: 'Sandbox',
     },
     {
+      href: '/marketplace',
+      label: isArabic ? 'سوق الوكلاء والحوكمة' : 'Agent Marketplace',
+      icon: Sparkles,
+      badge: 'New',
+    },
+    {
       href: '/documents',
       label: isArabic ? 'المستندات البحثية' : 'Research Documents',
       icon: FileText,
@@ -198,6 +204,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       badge: 'Sup-4',
     },
     {
+      href: '/marketplace',
+      label: isArabic ? 'سوق الوكلاء وسجل الحوكمة' : 'Agent Marketplace',
+      icon: Sparkles,
+      badge: 'Catalog',
+    },
+    {
       href: '/documents',
       label: isArabic ? 'مستودع أبحاث الطلبة' : 'Student Documents',
       icon: FileText,
@@ -225,6 +237,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       label: isArabic ? 'لوحة الحوكمة والرقابة' : 'AI Governance & Oversight',
       icon: LayoutDashboard,
       badge: 'Admin',
+    },
+    {
+      href: '/marketplace',
+      label: isArabic ? 'سوق الوكلاء وحوكمة الإصدارات' : 'Agent Marketplace & Versions',
+      icon: Sparkles,
+      badge: 'EP-5',
     },
     {
       href: '/dashboard/admin/insights',
