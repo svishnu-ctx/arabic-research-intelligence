@@ -28,7 +28,8 @@ import {
   ShieldCheck,
   CheckCircle2,
   RefreshCw,
-  FolderOpen
+  FolderOpen,
+  Bot
 } from 'lucide-react';
 
 interface ProjectOption {
@@ -130,6 +131,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       label: isArabic ? 'الأطروحة ومناقشة التخرج' : 'Thesis & Dissertation',
       icon: GraduationCap,
       badge: 'Agent 4',
+    },
+    {
+      href: '/student/sandbox',
+      label: isArabic ? 'مختبر بناء الوكلاء' : 'Agent Builder (Sandbox)',
+      icon: Bot,
+      badge: 'Sandbox',
     },
     {
       href: '/documents',

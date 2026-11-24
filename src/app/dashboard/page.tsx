@@ -226,6 +226,32 @@ export default function StudentDashboardPage() {
         </div>
       </div>
 
+      {/* Student AI Agent Factory / Sandbox Callout Banner */}
+      <div className="rounded-3xl border border-emerald-300 dark:border-emerald-800 bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-xs text-emerald-300 font-semibold">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>{isArabic ? 'مصنع الوكلاء · الطلبة كمبتكرين للذكاء' : 'Agent Factory · Students as AI Creators'}</span>
+          </div>
+          <h3 className="text-lg font-bold">
+            {isArabic ? 'مختبر بناء الوكلاء الخاص بك (Student AI Sandbox)' : 'Build Your Own Academic AI Assistant in the Sandbox'}
+          </h3>
+          <p className="text-xs text-emerald-100/80 max-w-xl leading-relaxed">
+            {isArabic
+              ? 'صمّم واختبر وكلاء أكاديميين مخصصين لأبحاثك في بيئة آمنة ومعزولة، مع إمكانية إرسالها للمشرف لاعتمادها.'
+              : 'Create, ground, and test personal AI assistants in a protected sandbox, or submit drafts for supervisor approval.'}
+          </p>
+        </div>
+        <Link
+          href="/student/sandbox"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all shadow-lg hover:scale-105 shrink-0"
+        >
+          <Bot className="w-4 h-4" />
+          <span>{isArabic ? 'فتح مختبر بناء الوكلاء' : 'Launch Agent Builder'}</span>
+          <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+        </Link>
+      </div>
+
       {/* Four AI Agents Quick Access Grid */}
       <div>
         <div className="flex items-center justify-between mb-4">
