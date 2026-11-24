@@ -22,6 +22,10 @@ export async function POST(req: NextRequest) {
         academicLevel: 'Masters',
         description: methodologySummary || 'Academic research methodology and AI modeling',
         completionProgress: 50,
+        dataClassification: 'Restricted',
+        encryptionAtRest: true,
+        exportRestricted: true,
+        auditLogs: [],
         publications: [],
         datasets: [],
         chapters: [],
@@ -34,18 +38,23 @@ export async function POST(req: NextRequest) {
 
     const language = body.language || 'en';
 
+    const safeTitle = thesisTitle || project?.title || 'Academic Thesis';
+    const safeDesc = methodologySummary || project?.description || '';
+    const safeLevel = academicLevel || project?.academicLevel || 'Masters';
+    const safeProjectId = project?.id || 'proj_default';
+
     const questions = await generateDefenseQuestions({
-      thesisTitle: thesisTitle || project.title,
-      methodologySummary: methodologySummary || project.description,
-      academicLevel: academicLevel || project.academicLevel,
+      thesisTitle: safeTitle,
+      methodologySummary: safeDesc,
+      academicLevel: safeLevel,
       language: language === 'ar' ? 'ar' : 'en',
     });
-    ServerStorage.setDefenseQuestions(project.id, questions.map(q => typeof q === 'string' ? q : q.question));
+    ServerStorage.setDefenseQuestions(safeProjectId, questions.map(q => typeof q === 'string' ? q : q.question));
 
     return NextResponse.json({
       success: true,
       questions,
-      projectId: project.id,
+      projectId: safeProjectId,
       provider: 'Fanar AI (QCRI)',
     });
   } catch (error) {

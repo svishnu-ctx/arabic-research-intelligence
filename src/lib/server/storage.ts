@@ -83,6 +83,15 @@ export interface StoredThesisChapter {
   }>;
 }
 
+export interface SecurityAuditEntry {
+  id: string;
+  timestamp: string;
+  action: string;
+  actor: string;
+  details: string;
+  status: 'Allowed' | 'Protected' | 'Flagged';
+}
+
 export interface StoredProject {
   id: string;
   studentId: string;
@@ -92,6 +101,10 @@ export interface StoredProject {
   academicLevel: 'Undergraduate' | 'Masters' | 'PhD';
   description?: string;
   completionProgress: number;
+  dataClassification: 'Restricted' | 'Internal' | 'Public';
+  encryptionAtRest: boolean;
+  exportRestricted: boolean;
+  auditLogs: SecurityAuditEntry[];
   createdAt: string;
   updatedAt: string;
   proposal?: StoredProposal;
@@ -126,6 +139,35 @@ const initialProject: StoredProject = {
   academicLevel: 'Masters',
   description: 'An empirical investigation into Arabic-native LLMs (Fanar, Jais) for thesis proposal generation and methodological literature review in Al-Waha University graduate programs.',
   completionProgress: 65,
+  dataClassification: 'Restricted',
+  encryptionAtRest: true,
+  exportRestricted: true,
+  auditLogs: [
+    {
+      id: 'aud_01',
+      timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
+      action: 'Document Read',
+      actor: 'Maryam Al-Mazrouei (مريم المزروعي)',
+      details: 'Read draft thesis chapter: Chapter 3 - Research Methodology.pdf',
+      status: 'Allowed',
+    },
+    {
+      id: 'aud_02',
+      timestamp: new Date(Date.now() - 3600000 * 4).toISOString(),
+      action: 'Literature RAG Query',
+      actor: 'Maryam Al-Mazrouei (مريم المزروعي)',
+      details: 'Crossref & OpenAlex search for Arabic LLM evaluation benchmarks (8 papers indexed)',
+      status: 'Allowed',
+    },
+    {
+      id: 'aud_03',
+      timestamp: new Date(Date.now() - 3600000 * 6).toISOString(),
+      action: 'Export Intercepted',
+      actor: 'Maryam Al-Mazrouei (مريم المزروعي)',
+      details: 'Unpublished raw survey responses export blocked: Secondary Supervisor Authorization Required',
+      status: 'Protected',
+    },
+  ],
   createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
   updatedAt: new Date().toISOString(),
   proposal: {
@@ -236,6 +278,19 @@ export class ServerStorage {
       academicLevel: data.academicLevel,
       description: data.description || '',
       completionProgress: 15,
+      dataClassification: data.dataClassification || 'Restricted',
+      encryptionAtRest: true,
+      exportRestricted: data.dataClassification === 'Public' ? false : true,
+      auditLogs: [
+        {
+          id: `aud_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          action: 'Project Created',
+          actor: 'Maryam Al-Mazrouei (مريم المزروعي)',
+          details: 'Project initialized with Al-Waha Data Boundary protection and AES-256 encryption.',
+          status: 'Allowed',
+        }
+      ],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       publications: [],
@@ -381,5 +436,72 @@ export class ServerStorage {
     proj.updatedAt = new Date().toISOString();
     memoryProjects.set(projectId, proj);
     return proj;
+  }
+
+  public static logSecurityAudit(
+    projectId: string,
+    action: string,
+    actor: string,
+    details: string,
+    status: 'Allowed' | 'Protected' | 'Flagged' = 'Allowed'
+  ): SecurityAuditEntry {
+    const proj = this.getProject(projectId);
+    const entry: SecurityAuditEntry = {
+      id: `aud_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      timestamp: new Date().toISOString(),
+      action,
+      actor,
+      details,
+      status,
+    };
+    if (proj) {
+      if (!proj.auditLogs) proj.auditLogs = [];
+      proj.auditLogs.unshift(entry);
+      memoryProjects.set(projectId, proj);
+    }
+    return entry;
+  }
+
+  public static authorizeExport(
+    projectId: string,
+    supervisorOverrideCode?: string
+  ): { authorized: boolean; error?: string } {
+    const proj = this.getProject(projectId);
+    if (!proj) return { authorized: false, error: 'Project not found' };
+
+    if (proj.dataClassification !== 'Restricted') {
+      this.logSecurityAudit(
+        projectId,
+        'Data Export',
+        'Maryam Al-Mazrouei (مريم المزروعي)',
+        'Exported project files package.',
+        'Allowed'
+      );
+      return { authorized: true };
+    }
+
+    const validCode = supervisorOverrideCode === 'ALWAHA-SUP-2026' || supervisorOverrideCode === 'OVERRIDE-DR-FATIMA';
+    if (validCode) {
+      this.logSecurityAudit(
+        projectId,
+        'Supervisor Export Override',
+        'Dr. Fatima Al-Zahra (د. فاطمة الزهراء)',
+        'Secondary supervisor signature verified. Restricted export permitted.',
+        'Allowed'
+      );
+      return { authorized: true };
+    }
+
+    this.logSecurityAudit(
+      projectId,
+      'Export Intercepted',
+      'Maryam Al-Mazrouei (مريم المزروعي)',
+      'External copy/export blocked. Secondary supervisor signature required for Restricted research.',
+      'Protected'
+    );
+    return {
+      authorized: false,
+      error: 'Prohibited: Secondary supervisor authorization required to export Restricted academic research files.',
+    };
   }
 }

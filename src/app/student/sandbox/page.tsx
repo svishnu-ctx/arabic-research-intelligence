@@ -44,6 +44,8 @@ interface SandboxAgent {
   createdAt: string;
   createdBy: string;
   runsCount: number;
+  approvedBy?: string;
+  approvalNotes?: string;
 }
 
 export default function StudentSandboxPage() {
@@ -316,11 +318,18 @@ export default function StudentSandboxPage() {
               <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'نموذج Fanar السيادي المعتمد' : 'Sovereign Fanar LLM'}</span>
             </div>
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-              <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'مرسل لمراجعة المشرف' : 'Under Faculty Review'}</span>
+              <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'الوكلاء المعتمدون أكاديمياً' : 'Faculty Approved Agents'}</span>
+              <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1">
+                {agents.filter((a) => a.accessLevel === 'faculty_approved').length}
+              </div>
+              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'معتمد رسمياً من د. فاطمة الزهراء' : 'Officially approved by faculty'}</span>
+            </div>
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
+              <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'قيد المراجعة / طلبات جديدة' : 'Under Review / Sandbox'}</span>
               <div className="text-2xl font-bold text-amber-700 dark:text-amber-400 mt-1">
                 {agents.filter((a) => a.accessLevel === 'submitted_review').length}
               </div>
-              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'في انتظار موافقة د. فاطمة' : 'Pending supervisor approval'}</span>
+              <span className="text-xs text-slate-700 dark:text-slate-300 mt-1 block">{isArabic ? 'في انتظار جلسة الاعتماد' : 'Pending supervisor evaluation'}</span>
             </div>
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
               <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">{isArabic ? 'حالة حوكمة الحماية' : 'Safety Harness Status'}</span>
@@ -345,13 +354,18 @@ export default function StudentSandboxPage() {
                       <Bot className="w-6 h-6" />
                     </div>
                     <div>
-                      {agent.accessLevel === 'submitted_review' ? (
+                      {agent.accessLevel === 'faculty_approved' ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 shadow-sm">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{isArabic ? 'معتمد أكاديمياً من المشرف' : 'Faculty Approved'}</span>
+                        </span>
+                      ) : agent.accessLevel === 'submitted_review' ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                           <UserCheck className="w-3 h-3" />
                           <span>{isArabic ? 'بانتظار المشرف' : 'Review Pending'}</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                           <Lock className="w-3 h-3" />
                           <span>{isArabic ? 'مختبر خاص (Sandbox)' : 'Personal Sandbox'}</span>
                         </span>
@@ -368,6 +382,18 @@ export default function StudentSandboxPage() {
                       {isArabic ? agent.descriptionAr : agent.descriptionEn}
                     </p>
                   </div>
+
+                  {agent.approvedBy && (
+                    <div className="p-3 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-xs text-emerald-900 dark:text-emerald-200 space-y-1">
+                      <div className="font-bold flex items-center gap-1 text-[11px]">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>{isArabic ? `معتمد بواسطة: ${agent.approvedBy}` : `Approved by: ${agent.approvedBy}`}</span>
+                      </div>
+                      {agent.approvalNotes && (
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">{agent.approvalNotes}</p>
+                      )}
+                    </div>
+                  )}
 
                   <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
                     <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
@@ -403,6 +429,24 @@ export default function StudentSandboxPage() {
                     <Play className="w-3.5 h-3.5" />
                     <span>{isArabic ? 'تشغيل واختبار الوكيل' : 'Run / Test'}</span>
                   </button>
+
+                  {agent.accessLevel !== 'faculty_approved' && (
+                    <button
+                      onClick={async () => {
+                        await fetch('/api/student/sandbox/approve', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ agentId: agent.id }),
+                        });
+                        fetchAgents();
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-800 dark:text-emerald-300 font-semibold text-xs transition-colors shadow-sm"
+                      title={isArabic ? 'محاكاة اعتماد المشرف الأكاديمي' : 'Simulate Supervisor Approval'}
+                    >
+                      <UserCheck className="w-3.5 h-3.5" />
+                      <span>{isArabic ? 'اعتماد المشرف' : 'Approve'}</span>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

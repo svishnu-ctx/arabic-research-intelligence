@@ -17,6 +17,8 @@ export interface SandboxAgent {
   createdAt: string;
   createdBy: string;
   runsCount: number;
+  approvedBy?: string;
+  approvalNotes?: string;
 }
 
 // In-memory persistent collection initialized with starter sandbox agents for Maryam
@@ -34,10 +36,12 @@ const sandboxAgentsStore: SandboxAgent[] = [
     model: 'Fanar',
     knowledgeSources: ['دليل كتابة الأطروحات - جامعة الواحة 2026', 'معايير إعداد الإشكاليات البحثية'],
     tools: ['evidence_grounding', 'arabic_citations', 'hypothesis_tester'],
-    accessLevel: 'personal_sandbox',
+    accessLevel: 'faculty_approved',
     createdAt: '2026-11-20T10:00:00Z',
     createdBy: 'Maryam Al-Mazrouei',
-    runsCount: 14,
+    runsCount: 19,
+    approvedBy: 'Dr. Fatima Al-Zahra (د. فاطمة الزهراء)',
+    approvalNotes: 'معتمد أكاديمياً للدفعة الدراسية - متوافق مع معايير الأطروحات بجامعة الواحة لعام 2026.',
   },
   {
     id: 'sbox_agent_02',
@@ -79,6 +83,15 @@ const sandboxAgentsStore: SandboxAgent[] = [
 
 export function getSandboxAgents(): SandboxAgent[] {
   return sandboxAgentsStore;
+}
+
+export function approveSandboxAgent(agentId: string, notes?: string): SandboxAgent | null {
+  const agent = sandboxAgentsStore.find((a) => a.id === agentId);
+  if (!agent) return null;
+  agent.accessLevel = 'faculty_approved';
+  agent.approvedBy = 'Dr. Fatima Al-Zahra (د. فاطمة الزهراء)';
+  agent.approvalNotes = notes || 'تم الاعتماد الأكاديمي للدفعة - متوافق مع معايير جامعة الواحة 2026.';
+  return agent;
 }
 
 export function saveSandboxAgent(agent: Omit<SandboxAgent, 'id' | 'createdAt' | 'runsCount'> & { id?: string }): SandboxAgent {

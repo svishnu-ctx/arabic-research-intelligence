@@ -40,6 +40,14 @@ interface DatasetStats {
     max: number;
     stdDev: number;
   }[];
+  suggestedTests?: Array<{
+    name: string;
+    nameAr: string;
+    type: 'Parametric' | 'Non-Parametric';
+    hypothesis: string;
+    targetVars: string[];
+    justification: string;
+  }>;
 }
 
 export default function MethodologyAgentPage() {
@@ -371,16 +379,45 @@ export default function MethodologyAgentPage() {
             </div>
           </div>
 
-          {/* Dataset Statistical Summary */}
+          {/* Dataset Statistical Summary & ALW-203 Schema / Tests */}
           {datasetStats && (
-            <div className="rounded-3xl border border-emerald-200 dark:border-emerald-900/40 bg-white dark:bg-slate-850 p-6 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-white">
-                  {isArabic ? 'المؤشرات الوصفية المحسوبة' : 'Calculated Descriptive Statistics'}
-                </span>
+            <div className="rounded-3xl border border-emerald-200 dark:border-emerald-900/40 bg-white dark:bg-slate-850 p-6 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                    Schema Detection & Statistics (ALW-203)
+                  </span>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    {isArabic ? 'المؤشرات الوصفية وتصنيف الأعمدة' : 'Calculated Descriptive Statistics'}
+                  </h3>
+                </div>
                 <span className="text-[10px] rounded-full bg-emerald-50 dark:bg-emerald-950 px-2.5 py-0.5 font-bold text-emerald-800 dark:text-emerald-300">
                   {datasetStats.rowCount} Rows • {datasetStats.columnCount} Columns
                 </span>
+              </div>
+
+              {/* Detected Schema Tags */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  {isArabic ? 'التعرف التلقائي على بنية الأعمدة (Schema):' : 'Automatic Schema Detection:'}
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {datasetStats.columns.map((col, idx) => (
+                    <span
+                      key={idx}
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold ${
+                        col.type === 'numerical'
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                          : col.type === 'time-series'
+                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
+                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                      }`}
+                    >
+                      <span>{col.name}</span>
+                      <span className="opacity-70 font-mono">({col.type})</span>
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* Statistics Table */}
@@ -408,6 +445,47 @@ export default function MethodologyAgentPage() {
                   </tbody>
                 </table>
               </div>
+
+              {/* Statistical Test Recommendations (ALW-203) */}
+              {datasetStats.suggestedTests && datasetStats.suggestedTests.length > 0 && (
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-purple-800 dark:text-purple-300">
+                      <BarChart2 className="w-4 h-4 text-purple-600" />
+                      <span>{isArabic ? 'الاختبارات الإحصائية الموصى بها (ANOVA / Regression / χ²)' : 'Recommended Statistical Validation Tests'}</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">α = 0.05</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {datasetStats.suggestedTests.map((test, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-2xl border border-purple-100 dark:border-purple-900/40 bg-purple-50/40 dark:bg-purple-950/20 text-xs space-y-1"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-900 dark:text-white">
+                            {isArabic ? test.nameAr : test.name}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            test.type === 'Parametric'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                              : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                          }`}>
+                            {test.type}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                          {test.justification}
+                        </p>
+                        <div className="text-[10px] text-purple-700 dark:text-purple-300 font-semibold pt-0.5">
+                          {isArabic ? 'المتغيرات المستهدفة: ' : 'Variables: '}{test.targetVars.join(' ↔ ')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Fanar Interpretation */}
               {fanarExplanation && (

@@ -16,7 +16,9 @@ import {
   FileText,
   AlertCircle,
   Table,
-  Plus
+  Plus,
+  Copy,
+  Check
 } from 'lucide-react';
 
 interface Publication {
@@ -36,6 +38,17 @@ interface LiteratureReviewResult {
   conflictingFindings?: string[];
   suggestedStructure: { sectionTitle: string; focus: string }[];
   verifiedGaps: string[];
+  comparisonMatrix?: Array<{
+    title: string;
+    authors: string;
+    year?: number | string;
+    source: string;
+    methodology: string;
+    sampleSize: string;
+    findings: string;
+    citationApa: string;
+    citationApaAr: string;
+  }>;
 }
 
 export default function LiteratureAgentPage() {
@@ -51,6 +64,7 @@ export default function LiteratureAgentPage() {
   const [reviewResult, setReviewResult] = useState<LiteratureReviewResult | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [targetLanguage, setTargetLanguage] = useState<'ar' | 'en'>(isArabic ? 'ar' : 'en');
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   React.useEffect(() => {
     setTargetLanguage(isArabic ? 'ar' : 'en');
@@ -432,6 +446,88 @@ export default function LiteratureAgentPage() {
               ))}
             </ul>
           </div>
+
+          {/* ALW-202: Comparative Synthesis Matrix Table */}
+          {reviewResult.comparisonMatrix && reviewResult.comparisonMatrix.length > 0 && (
+            <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-6 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    OpenAlex & Crossref Academic Matrix (ALW-202)
+                  </div>
+                  <h4 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Table className="w-4 h-4 text-indigo-600" />
+                    <span>{isArabic ? 'جدول المقارنة والتوليف المنهجي (Synthesis Matrix)' : 'Comparative Literature Synthesis Matrix'}</span>
+                  </h4>
+                </div>
+                <span className="text-xs text-slate-500">
+                  {isArabic ? 'توثيق تلقائي وفق APA 7th Edition' : 'Auto APA 7th Edition Grounded'}
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs text-start border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300">
+                      <th className="p-3 text-start font-bold">{isArabic ? 'الدراسة والمؤلف' : 'Paper & Authors'}</th>
+                      <th className="p-3 text-start font-bold">{isArabic ? 'السنة والمصدر' : 'Year & Source'}</th>
+                      <th className="p-3 text-start font-bold">{isArabic ? 'المنهجية العلمية' : 'Methodology'}</th>
+                      <th className="p-3 text-start font-bold">{isArabic ? 'العينة / النطاق' : 'Sample Size'}</th>
+                      <th className="p-3 text-start font-bold">{isArabic ? 'النتائج المحورية' : 'Key Findings'}</th>
+                      <th className="p-3 text-start font-bold">{isArabic ? 'التوثيق الأكاديمي (APA 7)' : 'APA 7th Citation'}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {reviewResult.comparisonMatrix.map((row, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td className="p-3 font-semibold text-slate-900 dark:text-white max-w-[180px]">
+                          <div className="line-clamp-2">{row.title}</div>
+                          <div className="text-[10px] text-slate-500 font-normal truncate mt-0.5">{row.authors}</div>
+                        </td>
+                        <td className="p-3 whitespace-nowrap">
+                          <span className="font-bold text-slate-800 dark:text-slate-200">{row.year}</span>
+                          <span className="block text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold">{row.source}</span>
+                        </td>
+                        <td className="p-3 text-slate-600 dark:text-slate-300 max-w-[150px]">
+                          <span className="inline-block px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-medium">
+                            {row.methodology}
+                          </span>
+                        </td>
+                        <td className="p-3 text-slate-600 dark:text-slate-300 max-w-[130px] font-mono text-[11px]">
+                          {row.sampleSize}
+                        </td>
+                        <td className="p-3 text-slate-600 dark:text-slate-300 max-w-[200px] leading-relaxed">
+                          {row.findings}
+                        </td>
+                        <td className="p-3 max-w-[220px]">
+                          <div className="flex items-start gap-1.5">
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-serif line-clamp-2 flex-1">
+                              {isArabic ? row.citationApaAr : row.citationApa}
+                            </p>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(isArabic ? row.citationApaAr : row.citationApa);
+                                setCopiedIndex(idx);
+                                setTimeout(() => setCopiedIndex(null), 2000);
+                              }}
+                              className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition shrink-0"
+                              title={isArabic ? 'نسخ توثيق APA' : 'Copy APA Citation'}
+                            >
+                              {copiedIndex === idx ? (
+                                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
