@@ -252,7 +252,7 @@ export default function StudentLoginPage() {
           </form>
 
           {/* Quick Demo Launch */}
-          <div className="mt-5 border-t border-slate-100 dark:border-slate-700/60 pt-5">
+          <div className="mt-5 border-t border-slate-100 dark:border-slate-700/60 pt-5 space-y-2.5">
             <button
               type="button"
               onClick={async () => {
@@ -261,13 +261,31 @@ export default function StudentLoginPage() {
                 router.push('/dashboard');
               }}
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 py-2.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 transition"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 py-2.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition shadow-sm"
             >
               <CheckCircle2 className="h-4 w-4 text-emerald-600" />
               <span>
                 {isArabic
-                  ? 'دخول فوري مباشر بحساب الطالب التجريبي'
-                  : 'Instant 1-Click Access as Student Researcher'}
+                  ? 'دخول فوري بحساب الطالب: مريم المزروعي'
+                  : 'Quick Login: Maryam Al-Mazrouei (M.Sc. Student)'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={async () => {
+                setIsLoading(true);
+                await login('falzahra@alwaha.ac.ae', 'Supervisor@123');
+                router.push('/supervisor/dashboard');
+              }}
+              disabled={isLoading}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-300 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 py-2.5 text-xs font-bold text-indigo-800 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition shadow-sm"
+            >
+              <CheckCircle2 className="h-4 w-4 text-indigo-600" />
+              <span>
+                {isArabic
+                  ? 'دخول فوري بحساب المشرف الأكاديمي: د. فاطمة الزهراء'
+                  : 'Quick Login: Dr. Fatima Al-Zahra (Faculty Supervisor)'}
               </span>
             </button>
 

@@ -75,18 +75,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       cleanUsername.toLowerCase() === 'student' ||
       cleanUsername === 'student_demo';
 
-    const displayName = isMockStudent
+    const isMockSupervisor =
+      cleanUsername.toLowerCase() === 'falzahra@alwaha.ac.ae' ||
+      cleanUsername.toLowerCase() === 'supervisor' ||
+      cleanUsername === 'supervisor_demo';
+
+    const role = isMockSupervisor ? 'supervisor' : 'student';
+
+    const displayName = isMockSupervisor
+      ? 'Dr. Fatima Al-Zahra (د. فاطمة الزهراء)'
+      : isMockStudent
       ? 'Maryam Al-Mazrouei (مريم المزروعي)'
       : cleanUsername === 'researcher' || cleanUsername === 'scholar_demo'
       ? 'د. باحث أكاديمي / Academic Researcher'
       : cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1);
 
+    const email = isMockSupervisor
+      ? 'falzahra@alwaha.ac.ae'
+      : isMockStudent
+      ? 'student@alwaha.ac.ae'
+      : `${cleanUsername.toLowerCase().replace(/\s+/g, '_')}@alwaha.ac.ae`;
+
     const mockUser: User = {
-      id: isMockStudent ? 'usr_student_01' : `usr_${Date.now()}`,
+      id: isMockSupervisor ? 'usr_supervisor_01' : isMockStudent ? 'usr_student_01' : `usr_${Date.now()}`,
       username: cleanUsername,
-      role: 'student',
+      role,
       displayName,
-      email: isMockStudent ? 'student@alwaha.ac.ae' : `${cleanUsername.toLowerCase().replace(/\s+/g, '_')}@alwaha.ac.ae`,
+      email,
     };
 
     try {

@@ -145,21 +145,19 @@ export default function ThesisAgentPage() {
         <div className="inline-flex rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-1 shadow-sm">
           <button
             onClick={() => setActiveTab('REVIEW')}
-            className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
-              activeTab === 'REVIEW'
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition ${activeTab === 'REVIEW'
                 ? 'bg-amber-700 text-white'
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100'
-            }`}
+              }`}
           >
             {isArabic ? 'مراجعة فصول الأطروحة' : 'Chapter Review'}
           </button>
           <button
             onClick={() => setActiveTab('DEFENSE')}
-            className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
-              activeTab === 'DEFENSE'
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition ${activeTab === 'DEFENSE'
                 ? 'bg-amber-700 text-white'
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100'
-            }`}
+              }`}
           >
             {isArabic ? 'محاكاة لجنة الدفاع (Viva)' : 'Viva Defense Simulator'}
           </button>
@@ -314,8 +312,8 @@ export default function ThesisAgentPage() {
                     {((Array.isArray(reviewResult.actionableRevisions)
                       ? reviewResult.actionableRevisions
                       : Array.isArray((reviewResult as any).suggestions)
-                      ? (reviewResult as any).suggestions
-                      : [(reviewResult.actionableRevisions || (reviewResult as any).suggestions)].filter(Boolean)
+                        ? (reviewResult as any).suggestions
+                        : [(reviewResult.actionableRevisions || (reviewResult as any).suggestions)].filter(Boolean)
                     ) as string[]).map((rev, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-emerald-600 font-bold">•</span>

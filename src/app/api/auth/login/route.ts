@@ -49,14 +49,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Special support for required mock student credentials
+    // Special support for required mock student and supervisor credentials
     const isMockStudent =
       (username.toLowerCase() === 'student@alwaha.ac.ae' || username.toLowerCase() === 'student') &&
       password === 'Student@123';
 
+    const isMockSupervisor =
+      (username.toLowerCase() === 'falzahra@alwaha.ac.ae' || username.toLowerCase() === 'supervisor' || username.toLowerCase() === 'supervisor_demo') &&
+      (password === 'Student@123' || password === 'Supervisor@123');
+
     let account = DEMO_ACCOUNTS[username] || DEMO_ACCOUNTS[username.toLowerCase()];
     if (!account && isMockStudent) {
       account = DEMO_ACCOUNTS['student@alwaha.ac.ae'];
+    }
+    if (!account && isMockSupervisor) {
+      account = DEMO_ACCOUNTS['falzahra@alwaha.ac.ae'];
     }
 
     if (!account) {
@@ -68,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
 
     let isValid = false;
-    if (isMockStudent) {
+    if (isMockStudent || isMockSupervisor) {
       isValid = true;
     } else {
       const salt = process.env[account.saltEnvVar];

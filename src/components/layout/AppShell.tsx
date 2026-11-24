@@ -72,7 +72,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           setActiveProjectId(data.projects[0].id);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
     fetch('/api/ai/provider/status')
       .then((res) => res.json())
@@ -86,7 +86,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           });
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [user]);
 
   if (!user || pathname === '/login') {
@@ -157,45 +157,124 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     },
   ];
 
+  const isSupervisor = user?.role === 'supervisor';
+
+  const supervisorNavItems = [
+    {
+      href: '/supervisor/dashboard',
+      label: isArabic ? 'لوحة المشرف ومتابعة الباحثين' : 'Cohort Overview',
+      icon: LayoutDashboard,
+      badge: 'Active',
+    },
+    {
+      href: '/supervisor/agents/proposal',
+      label: isArabic ? 'تقييم واعتماد المقترح' : 'Proposal Review Agent',
+      icon: Lightbulb,
+      badge: 'Sup-1',
+    },
+    {
+      href: '/supervisor/agents/literature',
+      label: isArabic ? 'تدقيق المراجع والأدبيات' : 'Citation Integrity Auditor',
+      icon: BookOpen,
+      badge: 'Sup-2',
+    },
+    {
+      href: '/supervisor/agents/methodology',
+      label: isArabic ? 'اعتماد المنهجية ولجنة IRB' : 'Methodology & IRB Validator',
+      icon: LineChart,
+      badge: 'Sup-3',
+    },
+    {
+      href: '/supervisor/agents/viva',
+      label: isArabic ? 'محاكاة لجنة المناقشة والحكم' : 'Viva Committee Chair Prep',
+      icon: GraduationCap,
+      badge: 'Sup-4',
+    },
+    {
+      href: '/documents',
+      label: isArabic ? 'مستودع أبحاث الطلبة' : 'Student Documents',
+      icon: FileText,
+      badge: null,
+    },
+    {
+      href: '/references',
+      label: isArabic ? 'مكتبة المراجع والمصادر' : 'References Library',
+      icon: BookmarkCheck,
+      badge: null,
+    },
+    {
+      href: '/settings',
+      label: isArabic ? 'الإعدادات ومزود Fanar' : 'Settings',
+      icon: Settings,
+      badge: null,
+    },
+  ];
+
+  const currentNavItems = isSupervisor ? supervisorNavItems : studentNavItems;
+
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100" dir={direction}>
       {/* Desktop Sidebar */}
       <aside className="hidden w-72 flex-col border-e border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 shadow-sm md:flex shrink-0">
         {/* University Header Branding */}
         <div className="flex h-20 items-center border-b border-slate-100 dark:border-slate-800 px-6 gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-700 text-white shadow-md shadow-emerald-700/20">
-            <GraduationCap className="h-6 w-6 text-emerald-100" />
+          <div className={`flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-md ${
+            isSupervisor
+              ? 'bg-indigo-700 shadow-indigo-700/20'
+              : 'bg-emerald-700 shadow-emerald-700/20'
+          }`}>
+            <GraduationCap className="h-6 w-6 text-white" />
           </div>
           <div className="overflow-hidden">
-            <div className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
+            <div className={`text-[11px] font-extrabold uppercase tracking-wider ${
+              isSupervisor ? 'text-indigo-800 dark:text-indigo-400' : 'text-emerald-800 dark:text-emerald-400'
+            }`}>
               {isArabic ? 'جامعة الواحة' : 'Al-Waha University'}
             </div>
             <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
-              {isArabic ? 'بوابة الذكاء البحثي للطلبة' : 'Student Research AI'}
+              {isArabic
+                ? (isSupervisor ? 'بوابة الإشراف الأكاديمي' : 'بوابة الذكاء البحثي للطلبة')
+                : (isSupervisor ? 'Faculty Supervisor Suite' : 'Student Research AI')}
             </div>
           </div>
         </div>
 
-        {/* Student Profile Card */}
+        {/* Profile Card (Student vs Supervisor) */}
         <div className="p-4 pb-2">
-          <div className="rounded-2xl border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20 p-3.5">
+          <div className={`rounded-2xl border p-3.5 ${
+            isSupervisor
+              ? 'border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/50 dark:bg-indigo-950/20'
+              : 'border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/20'
+          }`}>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                {isArabic ? 'حساب باحث الدراسات العليا' : 'Graduate Student'}
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                isSupervisor ? 'text-indigo-800 dark:text-indigo-300' : 'text-emerald-800 dark:text-emerald-300'
+              }`}>
+                {isSupervisor
+                  ? (isArabic ? 'مشرف أكاديمي وباحث رئيسي' : 'Faculty Research Supervisor')
+                  : (isArabic ? 'حساب باحث الدراسات العليا' : 'Graduate Student')}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-200/60 dark:bg-emerald-800/40 px-2 py-0.5 text-[9px] font-bold text-emerald-900 dark:text-emerald-200">
-                <CheckCircle2 className="h-3 w-3 text-emerald-700 dark:text-emerald-400" />
-                Demo
+              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold ${
+                isSupervisor
+                  ? 'bg-indigo-200/60 dark:bg-indigo-800/40 text-indigo-900 dark:text-indigo-200'
+                  : 'bg-emerald-200/60 dark:bg-emerald-800/40 text-emerald-900 dark:text-emerald-200'
+              }`}>
+                <CheckCircle2 className={`h-3 w-3 ${isSupervisor ? 'text-indigo-700 dark:text-indigo-400' : 'text-emerald-700 dark:text-emerald-400'}`} />
+                {isSupervisor ? 'Faculty' : 'Demo'}
               </span>
             </div>
             <div className="mt-1.5 font-bold text-xs text-slate-900 dark:text-white truncate">
-              {user.displayName || 'Maryam Al-Mazrouei (مريم المزروعي)'}
+              {user.displayName || (isSupervisor ? 'Dr. Fatima Al-Zahra (د. فاطمة الزهراء)' : 'Maryam Al-Mazrouei (مريم المزروعي)')}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-              {user.email || 'student@alwaha.ac.ae'}
+              {user.email || (isSupervisor ? 'falzahra@alwaha.ac.ae' : 'student@alwaha.ac.ae')}
             </div>
-            <div className="mt-2 text-[10px] font-medium text-emerald-700 dark:text-emerald-300">
-              {isArabic ? 'ماجستير علوم وهندسة الحاسوب' : 'M.Sc. in Computer Science'}
+            <div className={`mt-2 text-[10px] font-medium ${
+              isSupervisor ? 'text-indigo-700 dark:text-indigo-300' : 'text-emerald-700 dark:text-emerald-300'
+            }`}>
+              {isSupervisor
+                ? (isArabic ? 'أستاذ مشارك • كلية الحوسبة والذكاء الاصطناعي' : 'Associate Professor • Computing & AI')
+                : (isArabic ? 'ماجستير علوم وهندسة الحاسوب' : 'M.Sc. in Computer Science')}
             </div>
           </div>
         </div>
@@ -217,26 +296,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
             </div>
-            <span className="rounded-md bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300">
+            <span className={`rounded-md px-2 py-0.5 text-[9px] font-bold ${
+              isSupervisor
+                ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300'
+                : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+            }`}>
               Active
             </span>
           </div>
         </div>
 
-        {/* 10 Navigation Links */}
+        {/* Navigation Links */}
         <nav className="flex-1 space-y-0.5 px-3 overflow-y-auto py-2">
-          {studentNavItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname?.startsWith(item.href));
+          {currentNavItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && item.href !== '/supervisor/dashboard' && pathname?.startsWith(item.href));
             const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${
-                  isActive
-                    ? 'bg-emerald-700 text-white shadow-sm'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
+                className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${isActive
+                  ? (isSupervisor ? 'bg-indigo-700 text-white shadow-sm' : 'bg-emerald-700 text-white shadow-sm')
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
               >
                 <div className="flex items-center gap-2.5 truncate">
                   <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
@@ -245,11 +327,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center gap-1.5 shrink-0">
                   {item.badge && (
                     <span
-                      className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${
-                        isActive
-                          ? 'bg-white/20 text-white'
-                          : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                      }`}
+                      className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${isActive
+                        ? 'bg-white/20 text-white'
+                        : isSupervisor
+                        ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300'
+                        : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                        }`}
                     >
                       {item.badge}
                     </span>
@@ -296,8 +379,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {projects.length > 0
                     ? projects.find((p) => p.id === activeProjectId)?.title || projects[0].title
                     : isArabic
-                    ? 'الذكاء الاصطناعي في الطاقة المتجددة'
-                    : 'AI in Renewable Energy Optimization'}
+                      ? 'الذكاء الاصطناعي في الطاقة المتجددة'
+                      : 'AI in Renewable Energy Optimization'}
                 </span>
               </div>
             </div>
@@ -341,26 +424,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {mobileMenuOpen && (
           <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 p-4 md:hidden">
             <nav className="space-y-1">
-              {studentNavItems.map((item) => {
-                const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname?.startsWith(item.href));
+              {currentNavItems.map((item) => {
+                const isActive = pathname === item.href || (item.href !== '/dashboard' && item.href !== '/supervisor/dashboard' && pathname?.startsWith(item.href));
                 const Icon = item.icon;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold ${
-                      isActive
-                        ? 'bg-emerald-700 text-white'
-                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100'
-                    }`}
+                    className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold ${isActive
+                      ? (isSupervisor ? 'bg-indigo-700 text-white' : 'bg-emerald-700 text-white')
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100'
+                      }`}
                   >
                     <div className="flex items-center gap-2.5">
                       <Icon className="h-4 w-4" />
                       <span>{item.label}</span>
                     </div>
                     {item.badge && (
-                      <span className="rounded bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300">
+                      <span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${
+                        isSupervisor ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300' : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+                      }`}>
                         {item.badge}
                       </span>
                     )}
