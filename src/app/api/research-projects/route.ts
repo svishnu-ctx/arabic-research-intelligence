@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Research project created successfully in University of Sharjah workspace',
+      message: 'Research project created successfully in Al-Waha University workspace',
       project,
     });
   } catch (error) {

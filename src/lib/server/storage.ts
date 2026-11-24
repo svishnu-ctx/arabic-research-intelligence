@@ -103,14 +103,14 @@ export interface StoredProject {
 }
 
 export const MOCK_STUDENT_PROFILE: StudentProfile = {
-  id: 'std_sharjah_2026_01',
+  id: 'std_alwaha_2026_01',
   studentId: 'U22104589',
-  email: 'student@sharjah.ac.ae',
+  email: 'student@alwaha.ac.ae',
   fullName: 'Tariq Mansoor Al-Ketbi',
   fullNameAr: 'طارق منصور الكتبي',
   academicLevel: 'Masters',
   department: 'Computer Science & AI',
-  college: 'College of Computing & Informatics (جامعة الشارقة)',
+  college: 'College of Computing & Informatics (جامعة الواحة)',
 };
 
 // In-Memory Database with Pre-Seeded Academic Project
@@ -118,13 +118,13 @@ const memoryProjects: Map<string, StoredProject> = new Map();
 
 // Initialize initial graduation / master's project
 const initialProject: StoredProject = {
-  id: 'proj_ai_sharjah_01',
+  id: 'proj_ai_alwaha_01',
   studentId: MOCK_STUDENT_PROFILE.id,
   title: 'Evaluating LLMs in Arabic Academic Writing & Thesis Defense in UAE Higher Education',
   titleAr: 'تقييم نماذج اللغة الكبيرة في الكتابة الأكاديمية ومناقشة الأطروحات في التعليم العالي الإماراتي',
   researchField: 'Artificial Intelligence & Higher Education',
   academicLevel: 'Masters',
-  description: 'An empirical investigation into Arabic-native LLMs (Fanar, Jais) for thesis proposal generation and methodological literature review in University of Sharjah graduate programs.',
+  description: 'An empirical investigation into Arabic-native LLMs (Fanar, Jais) for thesis proposal generation and methodological literature review in Al-Waha University graduate programs.',
   completionProgress: 65,
   createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
   updatedAt: new Date().toISOString(),
@@ -145,7 +145,7 @@ const initialProject: StoredProject = {
     hypotheses: [
       'Arabic-native models exhibit statistically lower Character Error Rates in technical terminology than generic multilingual LLMs.'
     ],
-    scopeAndLimitations: 'Limited to graduate computing and engineering programs across the University of Sharjah over the 2025-2026 academic year.',
+    scopeAndLimitations: 'Limited to graduate computing and engineering programs across Al-Waha University over the 2025-2026 academic year.',
     expectedContribution: 'A verified evaluation rubric and open benchmark dataset for UAE academic institutions.',
     suggestedNextSteps: 'Proceed to empirical data collection with faculty evaluation rubrics.',
     updatedAt: new Date().toISOString(),
@@ -196,7 +196,7 @@ const initialProject: StoredProject = {
       id: 'chap_01',
       chapterNumber: 1,
       title: 'Chapter 1: Introduction and Research Background',
-      content: 'تُمثل تقنيات الذكاء الاصطناعي التوليدي، وتحديداً النماذج اللغوية الكبيرة (LLMs)، منعطفاً جذرياً في منظومة التعليم العالي والبحث الأكاديمي. وفي سياق الجامعات العربية، تبرز الحاجة الملحة لتبني نماذج تفهم البنية النحوية والصرفية للغة العربية الفصحى المعاصرة، مثل نموذج فنار (Fanar)، لتمكين طلبة الدراسات العليا في جامعة الشارقة من صياغة مقترحات بحثية متماسكة وتدقيق الأطروحات العلمية.',
+      content: 'تُمثل تقنيات الذكاء الاصطناعي التوليدي، وتحديداً النماذج اللغوية الكبيرة (LLMs)، منعطفاً جذرياً في منظومة التعليم العالي والبحث الأكاديمي. وفي سياق الجامعات العربية، تبرز الحاجة الملحة لتبني نماذج تفهم البنية النحوية والصرفية للغة العربية الفصحى المعاصرة، مثل نموذج فنار (Fanar)، لتمكين طلبة الدراسات العليا في جامعة الواحة من صياغة مقترحات بحثية متماسكة وتدقيق الأطروحات العلمية.',
       wordCount: 56,
       version: 1,
       updatedAt: new Date().toISOString(),
@@ -205,7 +205,7 @@ const initialProject: StoredProject = {
   ],
   defenseQuestions: [
     'كيف تضمن عدم إدخال النموذج اللغوي لمعلومات مضللة (Hallucinations) في استعراض الدراسات السابقة؟',
-    'ما هي الضوابط الأخلاقية التي اتبعتها في جامعة الشارقة لضمان نزاهة الملكية الفكرية لأطروحة الطالب؟',
+    'ما هي الضوابط الأخلاقية التي اتبعتها في جامعة الواحة لضمان نزاهة الملكية الفكرية لأطروحة الطالب؟',
     'لماذا تم اختيار التصميم المنهجي الهجين بدلاً من الاكتفاء بالتحليل الإحصائي الكمي الصرف؟'
   ]
 };

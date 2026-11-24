@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         { paperId: 'P03', methodology: 'Empirical Multi-Dataset Benchmarking' }
       ],
       strategicHypotheses: [
-        'Potential synergy between Arabic dialect modeling and renewable energy monitoring at University of Sharjah.'
+        'Potential synergy between Arabic dialect modeling and renewable energy monitoring at Al-Waha University.'
       ],
       supportingCitations: [
         { documentId: 'P01', physicalPage: 2, quoteSnippet: 'review of LLMs in Arabic' },

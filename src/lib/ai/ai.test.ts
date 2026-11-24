@@ -38,10 +38,10 @@ describe('AI Intelligence & Retrieval Layer', () => {
   };
 
   it('correctly normalizes Tashkeel while preserving letters (ة and ى)', () => {
-    const raw = 'تُعَدُّ مَدِينَةُ الشَّارِقَةِ رَائِدَةً فِي مَجَالِ الْبَحْثِ الْعِلْمِيِّ';
+    const raw = 'تُعَدُّ جَامِعَةُ الْوَاحَةِ رَائِدَةً فِي مَجَالِ الْبَحْثِ الْعِلْمِيِّ';
     const normalized = normalizeArabic(raw);
-    assert.strictEqual(normalized.includes('الشَّارِقَةِ'), false);
-    assert.ok(normalized.includes('الشارقة'));
+    assert.strictEqual(normalized.includes('الْوَاحَةِ'), false);
+    assert.ok(normalized.includes('الواحة'));
     assert.ok(normalized.endsWith('العلمي'));
   });
 

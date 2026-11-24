@@ -2,7 +2,7 @@ import { fanarAdapter, FanarChatMessage } from '@/lib/fanar/adapter';
 import { AcademicPaperResult } from '@/lib/publications/openalex';
 
 const LITERATURE_SYSTEM_PROMPT = `
-You are the "Academic Literature Review & Synthesis Specialist" at University of Sharjah, powered by Fanar AI (QCRI).
+You are the "Academic Literature Review & Synthesis Specialist" at Al-Waha University, powered by Fanar AI (QCRI).
 Your job: Analyze retrieved academic publications, group them into thematic clusters, and identify critical evidence-based research gaps.
 
 Strict Rules:

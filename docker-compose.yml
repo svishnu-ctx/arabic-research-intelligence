@@ -3,12 +3,12 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: sharjah_student_postgres
+    container_name: alwaha_student_postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: sharjah_student_research
+      POSTGRES_DB: alwaha_student_research
     ports:
       - '5432:5432'
     volumes:

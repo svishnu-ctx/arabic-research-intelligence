@@ -68,7 +68,7 @@ export function seedPublicCorpus() {
     pages: [
       {
         pageNumber: 1,
-        text: 'Renewable Energy Transition in the UAE: Technical Feasibility & Resource Assessment. Assessing solar PV and wind generation capabilities across University of Sharjah campuses and northern Emirates...',
+        text: 'Renewable Energy Transition in the UAE: Technical Feasibility & Resource Assessment. Assessing solar PV and wind generation capabilities across Al-Waha University campuses and northern Emirates...',
         characterCount: 1400,
         sha256Hash: 'hash-p02-page-1'
       },

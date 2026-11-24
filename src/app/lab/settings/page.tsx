@@ -127,7 +127,7 @@ export default function LabSettingsPage() {
                 {language === 'ar' ? 'ملف المحكم اللغوي المعتمد' : 'Reviewer Profile'}
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                د. فاطمة الزهراء (رئيسة لجنة تقييم التقنيات اللغوية - جامعة الشارقة)
+                د. فاطمة الزهراء (رئيسة لجنة تقييم التقنيات اللغوية - جامعة الواحة)
               </p>
             </div>
           </div>

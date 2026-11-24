@@ -106,7 +106,7 @@ export default function StudentDashboardPage() {
   };
 
   const activeProject = projects[0] || {
-    id: 'proj_sharjah_01',
+    id: 'proj_alwaha_01',
     title: isArabic
       ? 'تحسين كفاءة شبكات الطاقة المتجددة في دولة الإمارات باستخدام الذكاء الاصطناعي'
       : 'Optimizing Renewable Energy Microgrids in the UAE using Deep Reinforcement Learning',
@@ -126,7 +126,7 @@ export default function StudentDashboardPage() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300">
                 <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
-                <span>جامعة الشارقة • University of Sharjah</span>
+                <span>جامعة الواحة • Al-Waha University</span>
               </span>
               <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
                 {isArabic ? 'مستوى البحث: ماجستير (Master’s Thesis)' : 'Research Level: Master’s Thesis'}
@@ -138,8 +138,8 @@ export default function StudentDashboardPage() {
 
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {isArabic
-                ? `أهلاً بك، ${user?.displayName || 'مريم الشارقي'}`
-                : `Welcome, ${user?.displayName || 'Maryam Al-Sharqi'}`}
+                ? `أهلاً بك، ${user?.displayName || 'مريم المزروعي'}`
+                : `Welcome, ${user?.displayName || 'Maryam Al-Mazrouei'}`}
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
@@ -413,7 +413,7 @@ export default function StudentDashboardPage() {
                   {isArabic ? 'تحليل إحصائي لمجموعة بيانات الطاقة' : 'Dataset Descriptive Statistics Analyzed'}
                 </div>
                 <div className="text-[11px] text-slate-500 truncate">
-                  {isArabic ? 'ملف CSV: university_of_sharjah_solar_grid_2025.csv' : 'CSV: university_of_sharjah_solar_grid_2025.csv (1,240 rows)'}
+                  {isArabic ? 'ملف CSV: alwaha_solar_grid_2025.csv' : 'CSV: alwaha_solar_grid_2025.csv (1,240 rows)'}
                 </div>
               </div>
               <span className="text-[10px] text-slate-400 shrink-0">
@@ -517,8 +517,8 @@ export default function StudentDashboardPage() {
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder={
                     isArabic
-                      ? 'مثال: تطبيق خوارزميات التعلم المعزز لتحسين شبكات الطاقة في الشارقة'
-                      : 'e.g., Deep Reinforcement Learning for Smart Grid Optimization at University of Sharjah'
+                      ? 'مثال: تطبيق خوارزميات التعلم المعزز لتحسين شبكات الطاقة في جامعة الواحة'
+                      : 'e.g., Deep Reinforcement Learning for Smart Grid Optimization at Al-Waha University'
                   }
                   className="mt-1 block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-emerald-600 focus:outline-none"
                 />

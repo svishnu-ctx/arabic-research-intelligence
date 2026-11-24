@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [projects, setProjects] = useState<ProjectOption[]>([]);
-  const [activeProjectId, setActiveProjectId] = useState<string>('proj_sharjah_01');
+  const [activeProjectId, setActiveProjectId] = useState<string>('proj_alwaha_01');
   const [fanarStatus, setFanarStatus] = useState<{
     configured: boolean;
     connected: boolean;
@@ -93,7 +93,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  // The 10 required navigation items for the University of Sharjah Student Research AI Suite
+  // The 10 required navigation items for the Al-Waha University Student Research AI Suite
   const studentNavItems = [
     {
       href: '/dashboard',
@@ -168,7 +168,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="overflow-hidden">
             <div className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
-              {isArabic ? 'جامعة الشارقة' : 'University of Sharjah'}
+              {isArabic ? 'جامعة الواحة' : 'Al-Waha University'}
             </div>
             <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
               {isArabic ? 'بوابة الذكاء البحثي للطلبة' : 'Student Research AI'}
@@ -189,10 +189,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </span>
             </div>
             <div className="mt-1.5 font-bold text-xs text-slate-900 dark:text-white truncate">
-              {user.displayName || 'Maryam Al-Sharqi (مريم الشارقي)'}
+              {user.displayName || 'Maryam Al-Mazrouei (مريم المزروعي)'}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-              {user.email || 'student@sharjah.ac.ae'}
+              {user.email || 'student@alwaha.ac.ae'}
             </div>
             <div className="mt-2 text-[10px] font-medium text-emerald-700 dark:text-emerald-300">
               {isArabic ? 'ماجستير علوم وهندسة الحاسوب' : 'M.Sc. in Computer Science'}

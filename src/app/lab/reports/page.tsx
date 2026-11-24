@@ -149,8 +149,8 @@ export default function EvaluationReportsPage() {
           </h3>
           <p className="text-slate-700 dark:text-slate-300">
             {language === 'ar'
-              ? 'أجرت اللجنة الأكاديمية المختصة في جامعة الشارقة دراسة تقييمية مقارنة شملت 4 نماذج لغوية عربية رائدة (Fanar, Jais, ALLaM, AceGPT) ونموذجين للتعرف الصوتي (Whisper v3, SeamlessM4T) عبر 84 اختباراً قياسياً و62 مراجعة لغوية بشرية عمياء.'
-              : 'The Academic Evaluation Committee at the University of Sharjah conducted a comprehensive benchmark across 4 prominent Arabic LLMs and 2 speech recognition technologies, covering 84 standardized test cases and 62 blind linguistic reviews.'}
+              ? 'أجرت اللجنة الأكاديمية المختصة في جامعة الواحة دراسة تقييمية مقارنة شملت 4 نماذج لغوية عربية رائدة (Fanar, Jais, ALLaM, AceGPT) ونموذجين للتعرف الصوتي (Whisper v3, SeamlessM4T) عبر 84 اختباراً قياسياً و62 مراجعة لغوية بشرية عمياء.'
+              : 'The Academic Evaluation Committee at Al-Waha University conducted a comprehensive benchmark across 4 prominent Arabic LLMs and 2 speech recognition technologies, covering 84 standardized test cases and 62 blind linguistic reviews.'}
           </p>
         </div>
 
@@ -199,7 +199,7 @@ export default function EvaluationReportsPage() {
         <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
           <div>
             <div className="font-bold text-slate-900 dark:text-white">أ.د. طارق النعيمي</div>
-            <div>عميد البحث العلمي — جامعة الشارقة</div>
+            <div>عميد البحث العلمي — جامعة الواحة</div>
           </div>
           <div className="text-end">
             <div className="font-bold text-slate-900 dark:text-white">د. فاطمة الزهراء</div>

@@ -173,7 +173,7 @@ export default function SettingsPage() {
               <div>
                 <div className="text-slate-400">{isArabic ? 'المؤسسة التعليمية' : 'Institution'}</div>
                 <div className="font-bold text-slate-800 dark:text-slate-200">
-                  {isArabic ? 'جامعة الشارقة (University of Sharjah)' : 'University of Sharjah'}
+                  {isArabic ? 'جامعة الواحة (Al-Waha University)' : 'Al-Waha University'}
                 </div>
               </div>
 

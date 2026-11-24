@@ -19,13 +19,13 @@ describe('Scrypt & Session Security Module', () => {
     username: 'admin_demo',
     role: 'admin',
     displayName: 'Admin User',
-    email: 'admin@sharjah.ac.ae',
+    email: 'admin@alwaha.ac.ae',
   };
 
   it('generates consistent scrypt hash for identical password and salt', async () => {
     const salt = '3e0728d60855f82efb11fbe7934cdd4c';
-    const hash1 = await hashPassword('Admin@Sharjah2026!', salt);
-    const hash2 = await hashPassword('Admin@Sharjah2026!', salt);
+    const hash1 = await hashPassword('Admin@AlWaha2026!', salt);
+    const hash2 = await hashPassword('Admin@AlWaha2026!', salt);
     assert.strictEqual(hash1, hash2);
     assert.strictEqual(timingSafeEqualHex(hash1, hash2), true);
   });

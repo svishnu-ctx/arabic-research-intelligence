@@ -31,7 +31,7 @@ export default function StudentLoginPage() {
 
   const isArabic = language === 'ar';
 
-  const [email, setEmail] = useState('student@sharjah.ac.ae');
+  const [email, setEmail] = useState('student@alwaha.ac.ae');
   const [password, setPassword] = useState('Student@123');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -61,7 +61,7 @@ export default function StudentLoginPage() {
   };
 
   const handleQuickFill = () => {
-    setEmail('student@sharjah.ac.ae');
+    setEmail('student@alwaha.ac.ae');
     setPassword('Student@123');
   };
 
@@ -108,7 +108,7 @@ export default function StudentLoginPage() {
         <div className="mt-4 text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300">
             <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
-            <span>جامعة الشارقة • UNIVERSITY OF SHARJAH</span>
+            <span>جامعة الواحة • AL-WAHA UNIVERSITY</span>
           </span>
           <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             {isArabic ? 'بوابة الذكاء البحثي للطلبة' : 'Student Research AI Suite'}
@@ -132,7 +132,7 @@ export default function StudentLoginPage() {
               : 'This is a development mock account for evaluation, not official university SSO.'}
             <div className="mt-2 flex items-center justify-between gap-2 pt-1 border-t border-amber-200 dark:border-amber-900/50">
               <span className="text-[11px] font-mono text-amber-800 dark:text-amber-300">
-                student@sharjah.ac.ae / Student@123
+                student@alwaha.ac.ae / Student@123
               </span>
               <button
                 type="button"
@@ -172,7 +172,7 @@ export default function StudentLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-900 py-2.5 ps-10 pe-4 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-emerald-600 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-600 transition"
-                  placeholder="student@sharjah.ac.ae"
+                  placeholder="student@alwaha.ac.ae"
                 />
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function StudentLoginPage() {
               type="button"
               onClick={async () => {
                 setIsLoading(true);
-                await login('student@sharjah.ac.ae', 'Student@123');
+                await login('student@alwaha.ac.ae', 'Student@123');
                 router.push('/dashboard');
               }}
               disabled={isLoading}
@@ -305,7 +305,7 @@ export default function StudentLoginPage() {
                     : 'A reset link has been dispatched to your university email'}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
-                  {isArabic ? 'يرجى مراجعة البريد الوارد أو الاتصال بمركز تقنية المعلومات بجامعة الشارقة' : 'Please check your inbox or contact University of Sharjah IT Helpdesk'}
+                  {isArabic ? 'يرجى مراجعة البريد الوارد أو الاتصال بمركز تقنية المعلومات بجامعة الواحة' : 'Please check your inbox or contact Al-Waha University IT Helpdesk'}
                 </p>
               </div>
             ) : (
@@ -321,7 +321,7 @@ export default function StudentLoginPage() {
                     required
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
-                    placeholder="student@sharjah.ac.ae"
+                    placeholder="student@alwaha.ac.ae"
                     className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"
                   />
                 </div>

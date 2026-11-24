@@ -20,7 +20,7 @@ export async function searchCrossref(query: string, limit: number = 6): Promise<
     const encoded = encodeURIComponent(query.trim());
     const res = await fetch(`https://api.crossref.org/works?query=${encoded}&rows=${limit}`, {
       headers: {
-        'User-Agent': 'UniversityOfSharjah-StudentResearchAI/1.0 (mailto:student@sharjah.ac.ae)'
+        'User-Agent': 'AlWahaUniversity-AI/1.0 (mailto:student@alwaha.ac.ae)'
       },
       signal: AbortSignal.timeout(8000)
     });

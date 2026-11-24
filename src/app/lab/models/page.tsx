@@ -337,7 +337,7 @@ export default function ModelRegistryPage() {
                   type="text"
                   value={newDeveloper}
                   onChange={(e) => setNewDeveloper(e.target.value)}
-                  placeholder="e.g. University of Sharjah AI Lab"
+                  placeholder="e.g. Al-Waha University AI Lab"
                   className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 p-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-600"
                 />
               </div>

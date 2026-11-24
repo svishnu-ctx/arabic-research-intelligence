@@ -2,11 +2,11 @@ import { fanarAdapter, FanarChatMessage } from '@/lib/fanar/adapter';
 import { StoredMethodology, StoredDatasetAnalysis } from '@/lib/server/storage';
 
 const METHODOLOGY_SYSTEM_PROMPT = `
-You are the "Academic Research Methodology & Data Analysis Advisor" at University of Sharjah, powered by Fanar AI (QCRI).
+You are the "Academic Research Methodology & Data Analysis Advisor" at Al-Waha University, powered by Fanar AI (QCRI).
 Your mission: Assist researchers in designing rigorous, tailored academic research architectures matching their specific topic and academic level.
 
 Strict Rules:
-1. Provide practical, high-caliber academic methodology guidance tailored to the topic and UAE / University of Sharjah context.
+1. Provide practical, high-caliber academic methodology guidance tailored to the topic and UAE / Al-Waha University context.
 2. Return a valid JSON object only, adhering strictly to this schema:
 {
   "suggestedDesign": "Specific design title and classification",
@@ -80,7 +80,7 @@ Formulate a rigorous, fully tailored methodology plan for this research project 
         : typeof rawJust === 'object' && rawJust !== null
         ? Object.values(rawJust).join('. ')
         : (isArabic
-          ? `يتيح هذا التصميم اختبار الفرضيات الميدانية ونمذجة المتغيرات بدقة علمية وفق معايير جامعة الشارقة.`
+          ? `يتيح هذا التصميم اختبار الفرضيات الميدانية ونمذجة المتغيرات بدقة علمية وفق معايير جامعة الواحة.`
           : `This design provides the necessary empirical rigor to model dynamics and test performance hypotheses robustly.`);
 
       const rawDataColl = parsed.dataCollectionApproach || parsed.dataCollection;
@@ -165,7 +165,7 @@ Formulate a rigorous, fully tailored methodology plan for this research project 
     analysisPlan: defaultAnalysis.join('\n'),
     dataAnalysisPlan: defaultAnalysis,
     limitations: isArabic ? 'الاعتماد على بيئات المحاكاة المضبوطة مخبرياً' : 'Hardware-in-the-loop simulation environment constraints',
-    ethicalConsiderations: isArabic ? 'الالتزام بمعايير السلامة وأخلاقيات البحث بجامعة الشارقة' : 'University of Sharjah research ethics compliance',
+    ethicalConsiderations: isArabic ? 'الالتزام بمعايير السلامة وأخلاقيات البحث بجامعة الواحة' : 'Al-Waha University research ethics compliance',
     updatedAt: new Date().toISOString()
   };
 }

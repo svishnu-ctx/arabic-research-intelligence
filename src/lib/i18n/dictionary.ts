@@ -166,7 +166,7 @@ export const dictionaries: Record<Language, Dictionary> = {
   ar: {
     common: {
       appName: 'مختبر تقييم الذكاء الاصطناعي العربي',
-      universityName: 'جامعة الشارقة',
+      universityName: 'جامعة الواحة',
       tagline: 'منصة تقييم ومقارنة نماذج الذكاء الاصطناعي وتقنيات الصوت باللغة العربية',
       loading: 'جاري التحميل...',
       error: 'حدث خطأ غير متوقع',
@@ -191,7 +191,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     auth: {
       loginTitle: 'بوابة الدخول البحثية',
-      loginSubtitle: 'تسجيل الدخول للنظام الأكاديمي الذكي بجامعة الشارقة',
+      loginSubtitle: 'تسجيل الدخول للنظام الأكاديمي الذكي بجامعة الواحة',
       username: 'اسم المستخدم الأكاديمي',
       password: 'كلمة المرور',
       showPassword: 'إظهار كلمة المرور',
@@ -200,7 +200,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       signingIn: 'جاري التحقق من الهوية...',
       invalidCreds: 'اسم المستخدم أو كلمة المرور غير صحيحة.',
       accountLocked: 'تم تأمين الحساب مؤقتاً بسبب تكرار المحاولات غير الناجحة. يرجى الانتظار 10 دقائق.',
-      demoNotice: 'بيئة عرض تجريبية موجهة لأعضاء جامعة الشارقة.',
+      demoNotice: 'بيئة عرض تجريبية موجهة لأعضاء جامعة الواحة.',
       roleAdmin: 'مدير الجامعة / إدارة البحث العلمي',
       roleSupervisor: 'مشرف البحث العلمي',
       roleScholar: 'باحث دكتوراه',
@@ -327,7 +327,7 @@ export const dictionaries: Record<Language, Dictionary> = {
   en: {
     common: {
       appName: 'Arabic AI Evaluation Lab',
-      universityName: 'University of Sharjah',
+      universityName: 'Al-Waha University',
       tagline: 'Evaluation workspace for Arabic AI language models and speech technologies',
       loading: 'Loading...',
       error: 'An unexpected error occurred',
@@ -352,7 +352,7 @@ export const dictionaries: Record<Language, Dictionary> = {
     },
     auth: {
       loginTitle: 'Academic Portal Sign In',
-      loginSubtitle: 'Sign in to the University of Sharjah Research Intelligence System',
+      loginSubtitle: 'Sign in to the Al-Waha University Academic Intelligence System',
       username: 'Academic Username',
       password: 'Password',
       showPassword: 'Show password',
@@ -361,7 +361,7 @@ export const dictionaries: Record<Language, Dictionary> = {
       signingIn: 'Verifying credentials...',
       invalidCreds: 'Invalid username or password.',
       accountLocked: 'Account temporarily locked due to multiple failed attempts. Please retry in 10 minutes.',
-      demoNotice: 'Demonstration environment for University of Sharjah research faculty and students.',
+      demoNotice: 'Demonstration environment for Al-Waha University research faculty and students.',
       roleAdmin: 'University Administrator / Research Office',
       roleSupervisor: 'Faculty Research Supervisor',
       roleScholar: 'Ph.D. Research Scholar',

@@ -2,7 +2,7 @@ import { fanarAdapter, FanarChatMessage } from '@/lib/fanar/adapter';
 import { StoredProject } from '@/lib/server/storage';
 
 const THESIS_SYSTEM_PROMPT = `
-You are the "Academic Dissertation Examiner & Thesis Writing Advisor" at University of Sharjah, powered by Fanar AI (QCRI).
+You are the "Academic Dissertation Examiner & Thesis Writing Advisor" at Al-Waha University, powered by Fanar AI (QCRI).
 Your role: Rigorously critique draft dissertation chapters, verify empirical coherence, evaluate academic tone and flow, and prepare doctoral and master's candidates for oral viva defense.
 
 Strict Output Rules:
@@ -186,7 +186,7 @@ Academic Level: ${params.academicLevel || 'Masters'}
 ${isArabic ? 'STRICT LANGUAGE DIRECTIVE: You MUST generate all examination questions, categories, examiner intents, and suggested defenses strictly in formal Modern Standard Arabic (العربية الفصحى المعاصرة). Do NOT output English.' : 'STRICT LANGUAGE DIRECTIVE: You MUST generate all examination questions, categories, examiner intents, and suggested defenses strictly in formal Academic English. Do NOT output Arabic.'}
 Language: ${isArabic ? 'Modern Standard Arabic (العربية الفصحى الأكاديمية)' : 'Academic English'}
 
-Act as the University of Sharjah Thesis Examination Committee Chair.
+Act as the Al-Waha University Thesis Examination Committee Chair.
 Formulate 5 challenging, deep viva examination questions covering:
 1. METHODOLOGY
 2. LITERATURE
@@ -246,7 +246,7 @@ Return as valid JSON with the "questions" array containing question, category, e
         question: 'ما هي المحددات الأساسية للعينة أو بيانات المحاكاة المستخدمة، وكيف تضمن عدم تحيز خوارزميات التدريب؟',
         category: 'LIMITATIONS',
         examinerIntent: 'تقييم الصدق الداخلي والخارجي للنتائج وموثوقية مجموعة البيانات.',
-        suggestedDefense: 'وضح معايير التحقق المتقاطع (Cross-validation) واستخدام بيانات الطقس الحقيقية من محطات الشارقة.'
+        suggestedDefense: 'وضح معايير التحقق المتقاطع (Cross-validation) واستخدام بيانات الطقس الحقيقية من محطات جامعة الواحة.'
       },
       {
         question: 'كيف تسهم أطروحتك في سد الفجوة المعرفية مقارنة بأحدث الدراسات المنشورة في نفس المجال؟',

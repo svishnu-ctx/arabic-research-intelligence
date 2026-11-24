@@ -240,7 +240,7 @@ export const LAB_BENCHMARKS: BenchmarkTestCase[] = [
     modelsTestedCount: 4,
     lastUpdated: '2026-11-14',
     status: 'Active',
-    prompt: 'استخرج المحددات المنهجية المذكورة في وصف تجربة قياس كفاءة الألواح الشمسية المعرضة للغبار في الشارقة.',
+    prompt: 'استخرج المحددات المنهجية المذكورة في وصف تجربة قياس كفاءة الألواح الشمسية المعرضة للغبار في بيئة الإمارات.',
     referenceAnswer: 'المحددات المنهجية: 1. الاعتماد على المحاكاة الرقمية بدلاً من التجارب الميدانية طويلة الأمد. 2. عدم احتساب تغير زوايا الترسيب للغبار الرملي بحسب الرياح الموسمية.'
   }
 ];
@@ -313,7 +313,7 @@ export const DEMO_TESTING_RESPONSES: Record<string, ModelTestingResponse[]> = {
 export const DEMO_SPEECH_SCENARIO: SpeechEvaluationScenario = {
   id: 'speech-lecture-01',
   title: 'University Lecture: Advanced Research Methodology',
-  titleAr: 'محاضرة جامعية: مناهج البحث العلمي المتقدمة في جامعة الشارقة',
+  titleAr: 'محاضرة جامعية: مناهج البحث العلمي المتقدمة في جامعة الواحة',
   speaker: 'Prof. Tariq Al-Nuaimi',
   duration: '01:45 mins (Illustrative Audio Sample)',
   dialect: 'Modern Standard Arabic with Gulf inflection',

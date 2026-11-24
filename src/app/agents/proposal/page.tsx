@@ -99,7 +99,7 @@ export default function ProposalAgentPage() {
   const handleSaveToProject = async () => {
     if (!proposal) return;
     try {
-      const res = await fetch('/api/research-projects/proj_sharjah_01', {
+      const res = await fetch('/api/research-projects/proj_alwaha_01', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -131,7 +131,7 @@ export default function ProposalAgentPage() {
           </h1>
           <p className="mt-1 text-xs text-slate-500">
             {isArabic
-              ? 'توليد وصياغة مقترح أكاديمي منهجي معتمد لجامعة الشارقة، مع فحص الجدوى وتحديد أهداف وأسئلة البحث.'
+              ? 'توليد وصياغة مقترح أكاديمي منهجي معتمد لجامعة الواحة، مع فحص الجدوى وتحديد أهداف وأسئلة البحث.'
               : 'Brainstorm academic problems, formulate research objectives and questions, and structure complete research proposals.'}
           </p>
         </div>

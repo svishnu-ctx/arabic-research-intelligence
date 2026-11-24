@@ -19,7 +19,7 @@ export default function DocumentsPage() {
 
   const documents = [
     {
-      name: 'University_of_Sharjah_Solar_Microgrids_Proposal_v2.pdf',
+      name: 'Al_Waha_Solar_Microgrids_Proposal_v2.pdf',
       type: isArabic ? 'مقترح بحثي' : 'Research Proposal',
       size: '2.4 MB',
       updatedAt: '2026-11-22',
@@ -33,7 +33,7 @@ export default function DocumentsPage() {
       status: isArabic ? 'مسودة أولية' : 'Draft',
     },
     {
-      name: 'university_of_sharjah_solar_microgrid_dataset_2025.csv',
+      name: 'alwaha_solar_microgrid_dataset_2025.csv',
       type: isArabic ? 'مجموعة بيانات' : 'Dataset',
       size: '480 KB',
       updatedAt: '2026-11-20',

@@ -23,7 +23,7 @@ export default function RootIndexPage() {
       <div className="flex flex-col items-center gap-3">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-700 border-t-transparent"></div>
         <p className="text-xs font-semibold text-slate-500">
-          جامعة الشارقة • University of Sharjah Student Suite...
+          جامعة الواحة • Al-Waha University Platform...
         </p>
       </div>
     </div>

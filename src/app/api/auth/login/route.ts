@@ -51,12 +51,12 @@ export async function POST(req: NextRequest) {
 
     // Special support for required mock student credentials
     const isMockStudent =
-      (username.toLowerCase() === 'student@sharjah.ac.ae' || username.toLowerCase() === 'student') &&
+      (username.toLowerCase() === 'student@alwaha.ac.ae' || username.toLowerCase() === 'student') &&
       password === 'Student@123';
 
     let account = DEMO_ACCOUNTS[username] || DEMO_ACCOUNTS[username.toLowerCase()];
     if (!account && isMockStudent) {
-      account = DEMO_ACCOUNTS['student@sharjah.ac.ae'];
+      account = DEMO_ACCOUNTS['student@alwaha.ac.ae'];
     }
 
     if (!account) {

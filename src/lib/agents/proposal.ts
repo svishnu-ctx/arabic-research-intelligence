@@ -2,14 +2,14 @@ import { fanarAdapter, FanarChatMessage } from '@/lib/fanar/adapter';
 import { StoredProposal } from '@/lib/server/storage';
 
 const SYSTEM_PROMPT = `
-أنت "المستشار الذكي لتطوير المقترحات البحثية" في جامعة الشارقة (University of Sharjah)، مدعوم بنموذج فنار (Fanar AI).
+أنت "المستشار الذكي لتطوير المقترحات البحثية" في جامعة الواحة (Al-Waha University)، مدعوم بنموذج فنار (Fanar AI).
 مهمتك: مساعدة طلبة البكالوريوس، والماجستير، والدكتوراه في تحويل أفكارهم البحثية الأولية إلى مقترحات أكاديمية رصينة ومتكاملة الأركان.
 
 السياسات الأكاديمية الصارمة:
 1. التزم باللغة الأكاديمية الرصينة (سواء بالعربية الفصحى المعاصرة أو بالإنجليزية وفق طلب الطالب).
 2. لا تختلق مصادر أو مراجع وهمية مطلقاً.
 3. ميز بدقة بين الحقائق الأكاديمية المثبتة والفرضيات المقترحة.
-4. اتبع المعايير المعتمدة في كليات جامعة الشارقة للدراسات العليا.
+4. اتبع المعايير المعتمدة في كليات جامعة الواحة للدراسات العليا.
 
 يجب أن تولد المقترح بصيغة JSON واضحة ومحددة تحتوي الحقول التالية بالضبط:
 {
@@ -82,7 +82,7 @@ ${params.language === 'en' ? 'STRICT LANGUAGE DIRECTIVE: You MUST generate all J
         hypotheses: Array.isArray(parsed.hypotheses) ? parsed.hypotheses : [],
         scopeAndLimitations: parsed.scopeAndLimitations || '',
         expectedContribution: typeof parsed.expectedContribution === 'string' ? parsed.expectedContribution : contributions.join('\n'),
-        potentialContributions: contributions.length > 0 ? contributions : ['إثراء البحث العلمي والتطبيقي في جامعة الشارقة'],
+        potentialContributions: contributions.length > 0 ? contributions : ['إثراء البحث العلمي والتطبيقي في جامعة الواحة'],
         suggestedNextSteps: typeof parsed.suggestedNextSteps === 'string' ? parsed.suggestedNextSteps : nextSteps.join('\n'),
         updatedAt: new Date().toISOString()
       } as any;
@@ -100,7 +100,7 @@ ${params.language === 'en' ? 'STRICT LANGUAGE DIRECTIVE: You MUST generate all J
     questions: ['ما هي العوامل المؤثرة في الظاهرة المدروسة؟'],
     researchQuestions: ['ما هي العوامل المؤثرة في الظاهرة المدروسة؟'],
     hypotheses: ['توجد علاقة ارتباطية إيجابية ذات دلالة إحصائية بين المتغيرات'],
-    scopeAndLimitations: 'جامعة الشارقة والمؤسسات الأكاديمية المماثلة.',
+    scopeAndLimitations: 'جامعة الواحة والمؤسسات الأكاديمية المماثلة.',
     expectedContribution: 'إثراء المكتبة العلمية بأدلة تجريبية حديثة.',
     potentialContributions: ['إثراء المكتبة العلمية بأدلة تجريبية حديثة.'],
     suggestedNextSteps: 'الانتقال إلى مرحلة مسح الأدبيات واستخراج المراجع المعتمدة.',
