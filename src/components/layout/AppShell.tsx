@@ -556,6 +556,65 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <span>Fanar AI • Online ({fanarStatus.latencyMs || 340}ms)</span>
             </div>
 
+            {/* Quick Role Switcher Pill (Ignore Auth / Instant Testing across all roles) */}
+            <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">
+              <span className="text-slate-400 px-1 text-[10px]">{isArabic ? 'الدور:' : 'Role:'}</span>
+              <button
+                onClick={() => {
+                  const studentUser = {
+                    id: 'usr_student_01',
+                    username: 'student@alwaha.ac.ae',
+                    role: 'student' as const,
+                    displayName: 'Maryam Al-Mazrouei (مريم المزروعي)',
+                    email: 'student@alwaha.ac.ae',
+                  };
+                  localStorage.setItem('mock_auth_user_session', JSON.stringify(studentUser));
+                  window.location.href = '/dashboard/student';
+                }}
+                className={`px-2 py-0.5 rounded-lg transition ${
+                  user?.role === 'student' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                }`}
+              >
+                {isArabic ? 'طالب' : 'Student'}
+              </button>
+              <button
+                onClick={() => {
+                  const supervisorUser = {
+                    id: 'usr_supervisor_01',
+                    username: 'falzahra@alwaha.ac.ae',
+                    role: 'supervisor' as const,
+                    displayName: 'Dr. Fatima Al-Zahra (د. فاطمة الزهراء)',
+                    email: 'falzahra@alwaha.ac.ae',
+                  };
+                  localStorage.setItem('mock_auth_user_session', JSON.stringify(supervisorUser));
+                  window.location.href = '/supervisor/dashboard';
+                }}
+                className={`px-2 py-0.5 rounded-lg transition ${
+                  isSupervisor ? 'bg-indigo-600 text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                }`}
+              >
+                {isArabic ? 'مشرف' : 'Supervisor'}
+              </button>
+              <button
+                onClick={() => {
+                  const adminUser = {
+                    id: 'usr_admin_01',
+                    username: 'admin.research@alwaha.ac.ae',
+                    role: 'admin' as const,
+                    displayName: 'Prof. Dr. Tariq Al-Nuaimi (أ.د. طارق النعيمي)',
+                    email: 'admin.research@alwaha.ac.ae',
+                  };
+                  localStorage.setItem('mock_auth_user_session', JSON.stringify(adminUser));
+                  window.location.href = '/dashboard/admin/insights';
+                }}
+                className={`px-2 py-0.5 rounded-lg transition ${
+                  user?.role === 'admin' ? 'bg-purple-600 text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                }`}
+              >
+                {isArabic ? 'إدارة' : 'Admin'}
+              </button>
+            </div>
+
             {/* Dark / Light Toggle */}
             <button
               onClick={toggleTheme}
