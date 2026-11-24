@@ -16,6 +16,37 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+interface GroundedCitationAssertion {
+  statement: string;
+  citationSource: string;
+  doi?: string;
+  pageOrParagraph?: string;
+  cosineSimilarity: number;
+  isGrounded: boolean;
+  status: 'VERIFIED' | 'CITATION_VERIFICATION_NEEDED';
+}
+
+interface SafetyHarnessMeta {
+  piiRedactions?: {
+    type: string;
+    raw: string;
+    replacement: string;
+  }[];
+  groundingAudit?: {
+    overallGroundingScore: number;
+    totalAssertions: number;
+    groundedCount: number;
+    unverifiedCount: number;
+    assertions: GroundedCitationAssertion[];
+    hallucinationRisk: 'LOW' | 'MEDIUM' | 'HIGH';
+  };
+  violation?: {
+    type: string;
+    messageAr: string;
+    messageEn: string;
+  };
+}
+
 interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -24,6 +55,7 @@ interface ChatMessage {
   meta?: {
     model?: string;
     latencyMs?: number;
+    safetyHarness?: SafetyHarnessMeta;
   };
 }
 
@@ -120,7 +152,26 @@ export default function AgentChatInterface({
       });
 
       const data = await res.json();
-      if (data.success && data.reply) {
+      if (res.status === 403 && data.error === 'GuardrailViolationException') {
+        // ALW-601: Guardrail Violation Interception Display
+        const violationMsg: ChatMessage = {
+          id: `asst-violation-${Date.now()}`,
+          role: 'assistant',
+          content: isArabic ? data.messageAr : data.messageEn,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          meta: {
+            model: 'Al-Waha Safety Gateway (ALW-601)',
+            safetyHarness: {
+              violation: {
+                type: data.violationType,
+                messageAr: data.messageAr,
+                messageEn: data.messageEn,
+              },
+            },
+          },
+        };
+        setMessages([...updatedMessages, violationMsg]);
+      } else if (data.success && data.reply) {
         const assistantMsg: ChatMessage = {
           id: `asst-${Date.now()}`,
           role: 'assistant',
@@ -129,6 +180,7 @@ export default function AgentChatInterface({
           meta: {
             model: data.model || 'Fanar-C-2-27B',
             latencyMs: data.latencyMs || 250,
+            safetyHarness: data.safetyHarness,
           },
         };
         setMessages([...updatedMessages, assistantMsg]);
@@ -285,10 +337,86 @@ export default function AgentChatInterface({
                   className={`p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                     isUser
                       ? 'bg-emerald-600 text-white rounded-tr-none shadow-md shadow-emerald-600/10'
+                      : m.meta?.safetyHarness?.violation
+                      ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 border border-rose-300 dark:border-rose-800'
                       : 'bg-slate-100 dark:bg-slate-800/90 text-slate-900 dark:text-slate-100 rounded-tl-none border border-slate-200/80 dark:border-slate-700/80 shadow-xs'
                   }`}
                 >
+                  {m.meta?.safetyHarness?.violation && (
+                    <div className="flex items-center gap-1.5 font-bold text-rose-700 dark:text-rose-400 mb-2 pb-1 border-b border-rose-200 dark:border-rose-800/50">
+                      <ShieldCheck className="w-4 h-4 text-rose-600" />
+                      <span>{isArabic ? 'حظر أمني: مخالفة حوكمة البيانات (ALW-601)' : 'Security Block: Guardrail Violation'}</span>
+                    </div>
+                  )}
                   {m.content}
+
+                  {/* ALW-601 PII Redaction Warning Pill */}
+                  {m.meta?.safetyHarness?.piiRedactions && m.meta.safetyHarness.piiRedactions.length > 0 && (
+                    <div className="mt-2.5 p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-[11px] text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span>
+                        {isArabic
+                          ? `تم تنقيح وحجب (${m.meta.safetyHarness.piiRedactions.length}) معرفات حساسة (هوية إماراتية / هاتف / سجل سريري) لحماية الخصوصية.`
+                          : `Masked (${m.meta.safetyHarness.piiRedactions.length}) sensitive PII/PHI entities under UAE data compliance.`}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* ALW-602 Grounding & Hallucination Defense Badges */}
+                  {m.meta?.safetyHarness?.groundingAudit && (
+                    <div className="mt-3 pt-2.5 border-t border-slate-200/70 dark:border-slate-700/60 space-y-2">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-emerald-600" />
+                          {isArabic ? 'تدقيق الإسناد المرجعي (ALW-602):' : 'Evidence Grounding Audit:'}
+                        </span>
+                        <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                          {m.meta.safetyHarness.groundingAudit.overallGroundingScore}% Cosine Match
+                        </span>
+                      </div>
+
+                      {/* Flag unverified citations */}
+                      {m.meta.safetyHarness.groundingAudit.assertions
+                        .filter((a) => !a.isGrounded)
+                        .map((assertion, aIdx) => (
+                          <div
+                            key={aIdx}
+                            className="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-[11px] text-rose-800 dark:text-rose-300 flex items-start gap-1.5"
+                          >
+                            <span className="font-bold text-rose-600 shrink-0">⚠️</span>
+                            <div>
+                              <strong className="block">
+                                {isArabic ? 'يتطلب تدقيق الاستشهاد الأكاديمي' : 'Citation verification needed'}
+                              </strong>
+                              <span className="text-[10px] opacity-80">
+                                {isArabic
+                                  ? `معامل التشابه الدلالي (${assertion.cosineSimilarity}) أقل من الحد المعتمد 0.78`
+                                  : `Cosine similarity (${assertion.cosineSimilarity}) is below verified threshold 0.78`}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+
+                      {/* Display verified citations */}
+                      {m.meta.safetyHarness.groundingAudit.assertions
+                        .filter((a) => a.isGrounded)
+                        .slice(0, 2)
+                        .map((assertion, aIdx) => (
+                          <div
+                            key={aIdx}
+                            className="p-1.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900 text-[10px] text-emerald-800 dark:text-emerald-300 flex items-center justify-between"
+                          >
+                            <div className="truncate max-w-[260px]">
+                              <span>📌 {assertion.citationSource}</span>
+                              {assertion.pageOrParagraph && <span className="opacity-70 ms-1">({assertion.pageOrParagraph})</span>}
+                            </div>
+                            <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                              {(assertion.cosineSimilarity * 100).toFixed(0)}%
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Footer Metadata & Actions */}

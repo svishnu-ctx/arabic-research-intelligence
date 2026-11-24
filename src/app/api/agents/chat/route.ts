@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { FanarProviderAdapter } from '@/lib/fanar/adapter';
 import { getSandboxAgents } from '@/lib/agents/sandbox';
+import { 
+  enforceSafetyGuardrails, 
+  auditEvidenceGrounding, 
+  GuardrailViolationException 
+} from '@/lib/safety/guardrails';
 
 export const runtime = 'nodejs';
 
@@ -153,6 +158,37 @@ export async function POST(req: Request) {
 
     const isArabic = language === 'ar';
 
+    // Epic 6: ALW-601 PII & Research Leakage Filter on incoming prompts
+    const lastMessage = messages[messages.length - 1];
+    let sanitizedLastMessage = '';
+    let piiDetections: any[] = [];
+
+    if (lastMessage && lastMessage.content) {
+      try {
+        const redactionCheck = enforceSafetyGuardrails(lastMessage.content, 'prompt');
+        sanitizedLastMessage = redactionCheck.sanitizedText;
+        piiDetections = redactionCheck.redactedEntities;
+        // Replace in array so LLM receives sanitized input
+        messages[messages.length - 1].content = sanitizedLastMessage;
+      } catch (err: any) {
+        if (err instanceof GuardrailViolationException) {
+          // ALW-601: Returns HTTP 403 with GuardrailViolationException if restricted IP leakage is attempted
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'GuardrailViolationException',
+              violationType: err.violationType,
+              messageAr: err.detailsAr,
+              messageEn: err.detailsEn,
+              detectedPattern: err.detectedPattern,
+            },
+            { status: 403 }
+          );
+        }
+        throw err;
+      }
+    }
+
     // 1. Determine System Prompt & Settings
     let systemPrompt = '';
     let agentName = '';
@@ -225,15 +261,37 @@ export async function POST(req: Request) {
         maxTokens: 1000,
       });
 
+      // Epic 6: ALW-601 Redaction on Output + ALW-602 Evidence Grounding & Hallucination Defense
+      const outputRedaction = enforceSafetyGuardrails(fanarRes.content, 'output');
+      const groundingAudit = auditEvidenceGrounding(outputRedaction.sanitizedText);
+
       return NextResponse.json({
         success: true,
-        reply: fanarRes.content,
+        reply: outputRedaction.sanitizedText,
         agentName,
         model: fanarRes.model || 'Fanar-C-2-27B',
         latencyMs: fanarRes.latencyMs || Date.now() - startTime,
         suggestedPrompts,
+        safetyHarness: {
+          piiRedactions: [...piiDetections, ...outputRedaction.redactedEntities],
+          groundingAudit,
+        },
       });
     } catch (err: unknown) {
+      if (err instanceof GuardrailViolationException) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'GuardrailViolationException',
+            violationType: err.violationType,
+            messageAr: err.detailsAr,
+            messageEn: err.detailsEn,
+            detectedPattern: err.detectedPattern,
+          },
+          { status: 403 }
+        );
+      }
+
       const errorMsg = err instanceof Error ? err.message : String(err);
       const lastUserMsg = messages[messages.length - 1]?.content || '';
 
@@ -244,14 +302,19 @@ export async function POST(req: Request) {
         : `As the "${agentName}" at Al-Waha University, I received your inquiry: "${lastUserMsg}".
 According to academic standards, we recommend aligning this formulation with peer-reviewed methodologies and strict research integrity.`;
 
+      const groundingAudit = auditEvidenceGrounding(fallbackReply);
+
       return NextResponse.json({
         success: true,
         reply: fallbackReply,
         agentName,
-        model: 'Fanar-C-2-27B (Institutional Adapter)',
-        latencyMs: 150,
+        model: 'Fanar-C-2-27B (Fallback Adapter)',
+        latencyMs: Date.now() - startTime,
         suggestedPrompts,
-        notice: errorMsg,
+        safetyHarness: {
+          piiRedactions: piiDetections,
+          groundingAudit,
+        },
       });
     }
   } catch (error) {
