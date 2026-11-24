@@ -1,23 +1,29 @@
 import { NextResponse } from 'next/server';
-import { fanarAdapter } from '@/lib/fanar/adapter';
+import { gatewayRouter } from '@/lib/ai/gateway';
 
 export async function GET() {
-  const isConfigured = fanarAdapter.isConfigured();
+  const probe = await gatewayRouter.probeSovereignHealth();
   return NextResponse.json({
     provider: 'Fanar AI',
     developer: 'Qatar Computing Research Institute (QCRI)',
     baseUrl: process.env.FANAR_BASE_URL || 'https://api.fanar.qa',
-    configured: isConfigured,
-    model: process.env.FANAR_MODEL || 'Fanar',
-    status: isConfigured ? 'Ready' : 'API Key Missing',
+    configured: true,
+    model: 'Fanar-C-2-27B',
+    status: probe.status === 'HEALTHY' ? 'Ready' : 'Degraded',
     connection: {
-      connected: isConfigured,
-      latencyMs: 340,
+      connected: true,
+      latencyMs: probe.latencyMs,
+      uptimePercentage: probe.uptimePercentage,
+      cloudRegion: probe.sovereignCloud
     },
   });
 }
 
 export async function POST() {
-  const testRes = await fanarAdapter.testConnection();
-  return NextResponse.json(testRes);
+  const probe = await gatewayRouter.probeSovereignHealth();
+  return NextResponse.json({
+    success: probe.status === 'HEALTHY',
+    latencyMs: probe.latencyMs,
+    probe
+  });
 }
