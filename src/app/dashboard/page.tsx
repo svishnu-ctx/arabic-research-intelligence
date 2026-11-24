@@ -413,7 +413,7 @@ export default function StudentDashboardPage() {
                   {isArabic ? 'تحليل إحصائي لمجموعة بيانات الطاقة' : 'Dataset Descriptive Statistics Analyzed'}
                 </div>
                 <div className="text-[11px] text-slate-500 truncate">
-                  {isArabic ? 'ملف CSV: sharjah_solar_grid_2025.csv' : 'CSV: sharjah_solar_grid_2025.csv (1,240 rows)'}
+                  {isArabic ? 'ملف CSV: university_of_sharjah_solar_grid_2025.csv' : 'CSV: university_of_sharjah_solar_grid_2025.csv (1,240 rows)'}
                 </div>
               </div>
               <span className="text-[10px] text-slate-400 shrink-0">
@@ -518,7 +518,7 @@ export default function StudentDashboardPage() {
                   placeholder={
                     isArabic
                       ? 'مثال: تطبيق خوارزميات التعلم المعزز لتحسين شبكات الطاقة في الشارقة'
-                      : 'e.g., Deep Reinforcement Learning for Smart Grid Optimization in Sharjah'
+                      : 'e.g., Deep Reinforcement Learning for Smart Grid Optimization at University of Sharjah'
                   }
                   className="mt-1 block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-emerald-600 focus:outline-none"
                 />

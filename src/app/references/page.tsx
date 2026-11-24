@@ -34,7 +34,7 @@ export default function ReferencesPage() {
     },
     {
       title: 'Benchmarking Arabic Academic AI Architectures for Engineering Document Analysis',
-      authors: 'Sharjah AI Research Consortium',
+      authors: 'University of Sharjah AI Research Consortium',
       year: 2025,
       venue: 'Journal of Arabic Computing & Informatics',
       doi: '10.1007/s10590-025-0987-1',

@@ -44,7 +44,7 @@ export default function ThesisAgentPage() {
   const [chapterTitle, setChapterTitle] = useState('Chapter 3: Methodology and Microgrid Architecture');
   const [chapterType, setChapterType] = useState('METHODOLOGY');
   const [chapterText, setChapterText] = useState(
-    `This research presents an adaptive deep reinforcement learning framework for energy management in UAE microgrids. The system models solar irradiance from Sharjah weather stations using an ensemble Markov decision process. Battery storage constraints are evaluated under ambient temperatures exceeding 45°C. However, previous studies (Al-Maktoum et al., 2023) lacked empirical high-temperature degradation modeling, which our simulation addresses through state-space temperature penalty matrices.`
+    `This research presents an adaptive deep reinforcement learning framework for energy management in UAE microgrids. The system models solar irradiance from University of Sharjah weather stations using an ensemble Markov decision process. Battery storage constraints are evaluated under ambient temperatures exceeding 45°C. However, previous studies (Al-Maktoum et al., 2023) lacked empirical high-temperature degradation modeling, which our simulation addresses through state-space temperature penalty matrices.`
   );
   const [isReviewing, setIsReviewing] = useState(false);
   const [reviewResult, setReviewResult] = useState<ThesisReviewResult | null>(null);
@@ -105,7 +105,7 @@ export default function ThesisAgentPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           thesisTitle,
-          methodologySummary: 'Deep Reinforcement Learning trained on Sharjah meteorological dataset',
+          methodologySummary: 'Deep Reinforcement Learning trained on University of Sharjah meteorological dataset',
           academicLevel: 'MASTERS',
           language: targetLanguage,
         }),

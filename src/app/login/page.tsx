@@ -305,7 +305,7 @@ export default function StudentLoginPage() {
                     : 'A reset link has been dispatched to your university email'}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
-                  {isArabic ? 'يرجى مراجعة البريد الوارد أو الاتصال بمركز تقنية المعلومات' : 'Please check your inbox or contact Sharjah IT Helpdesk'}
+                  {isArabic ? 'يرجى مراجعة البريد الوارد أو الاتصال بمركز تقنية المعلومات بجامعة الشارقة' : 'Please check your inbox or contact University of Sharjah IT Helpdesk'}
                 </p>
               </div>
             ) : (

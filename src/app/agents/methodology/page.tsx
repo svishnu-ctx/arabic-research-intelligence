@@ -50,7 +50,7 @@ export default function MethodologyAgentPage() {
   const [topic, setTopic] = useState('Deep Reinforcement Learning for Solar Microgrids');
   const [researchType, setResearchType] = useState<'QUANTITATIVE' | 'QUALITATIVE' | 'MIXED'>('QUANTITATIVE');
   const [researchObjectives, setResearchObjectives] = useState(
-    '1. Evaluate battery storage efficiency under intermittent solar radiation in Sharjah.\n2. Minimize grid outage frequency using reinforcement learning.'
+    '1. Evaluate battery storage efficiency under intermittent solar radiation across University of Sharjah campuses.\n2. Minimize grid outage frequency using reinforcement learning.'
   );
 
   const [isAdvising, setIsAdvising] = useState(false);
@@ -113,7 +113,7 @@ export default function MethodologyAgentPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          filename: 'sharjah_solar_microgrid_sample.csv',
+          filename: 'university_of_sharjah_solar_microgrid_sample.csv',
           content: csvText,
           csvContent: csvText,
           researchTopic: topic,

@@ -6,8 +6,8 @@ import { AppShell } from '@/components/layout/AppShell';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Arabic Research Intelligence | جامعة الشارقة',
-  description: 'AI Research Copilot for Arabic & English Academic Research',
+  title: 'University of Sharjah | Arabic Research Intelligence - جامعة الشارقة',
+  description: 'AI Research Suite for University of Sharjah Graduate Students & Researchers',
 };
 
 export default function RootLayout({

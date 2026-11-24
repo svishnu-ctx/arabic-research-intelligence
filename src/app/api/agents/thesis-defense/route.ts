@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       project = {
         id: 'proj_default',
         studentId: 'usr_student',
-        title: thesisTitle || 'Optimizing Renewable Energy Microgrids in Sharjah',
+        title: thesisTitle || 'Optimizing Renewable Energy Microgrids at University of Sharjah',
         researchField: 'Computer Science & Sustainable Engineering',
         academicLevel: 'Masters',
         description: methodologySummary || 'Academic research methodology and AI modeling',
